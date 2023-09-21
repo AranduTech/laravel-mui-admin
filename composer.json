@@ -1,0 +1,26 @@
+{
+    "name": "arandu/laravel-mui-admin",
+    "description": "A highly customizable CMS for Laravel, built with React and Material UI.",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Arandu\\LaravelMuiAdmin\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bruno Polo",
+            "email": "bruno@arandutech.com.br"
+        }
+    ],
+    "require": {
+        "illuminate/support": "^8.83"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Arandu\\LaravelMuiAdmin\\AdminServiceProvider"
+            ]
+        }
+    }
+}
