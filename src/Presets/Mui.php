@@ -17,6 +17,7 @@ class Mui extends Preset
     {
         // static::ensureComponentDirectoryExists();
         static::updatePackages(false);
+        static::updatePackages();
         static::updateWebpackConfiguration();
         static::updateBootstrapping();
         static::updateComponent();
@@ -29,8 +30,11 @@ class Mui extends Preset
      * @param  array  $packages
      * @return array
      */
-    protected static function updatePackageArray(array $packages)
+    protected static function updatePackageArray(array $packages, $configurationKey)
     {
+        if ($configurationKey == 'devDependencies') {
+            return Arr::except($packages, ['axios']);
+        }
         return [
             '@arandu/laravel-mui-admin' => '^0.0.5',
             '@babel/preset-react' => '^7.13.13',
@@ -51,6 +55,7 @@ class Mui extends Preset
             'redux-logger' => '^3.0.6',
             'axios' => '^1.4.0',
             'react-router-dom' => '^6.15.0',
+            'uuid' => '^9.0.0',
         ] + Arr::except($packages, ['vue', 'vue-template-compiler']);
     }
 
