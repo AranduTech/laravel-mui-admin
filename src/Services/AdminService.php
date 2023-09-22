@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use App\Providers\RouteServiceProvider;
 use Arandu\LaravelMuiAdmin\Http\Controllers\RendererController;
+use Arandu\LaravelMuiAdmin\Http\Controllers\RepositoryController;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
 use Arandu\LaravelMuiAdmin\Traits\HasAdminSupport;
@@ -114,7 +115,7 @@ class AdminService
                 $instance->api();
             }
 
-            Route::get('/admin/helpers/autocomplete', [Http\Controllers\RepositoryController::class, 'autocomplete'])
+            Route::get('/admin/helpers/autocomplete', [RepositoryController::class, 'autocomplete'])
                 ->name('admin.autocomplete');
         });
     }

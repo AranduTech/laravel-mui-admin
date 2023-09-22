@@ -115,15 +115,15 @@ class Mui extends Preset
            'app/Http/Controllers/Auth'
         );
 
-        (new Filesystem())->copy(
-            __DIR__.'/../../src/Http/Controllers/RendererController.php',
-           'app/Http/Controllers/RendererController.php'
-        );
+        // (new Filesystem())->copy(
+        //     __DIR__.'/../../src/Http/Controllers/RendererController.php',
+        //    'app/Http/Controllers/RendererController.php'
+        // );
         
-        (new Filesystem())->copy(
-           __DIR__.'/../../src/Http/Controllers/RepositoryController.php',
-           'app/Http/Controllers/RepositoryController.php'
-        );
+        // (new Filesystem())->copy(
+        //    __DIR__.'/../../src/Http/Controllers/RepositoryController.php',
+        //    'app/Http/Controllers/RepositoryController.php'
+        // );
 
         (new Filesystem())->copyDirectory(
             __DIR__.'/../../src/Commands',
