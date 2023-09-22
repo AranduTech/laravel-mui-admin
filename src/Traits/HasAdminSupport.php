@@ -298,8 +298,8 @@ trait HasAdminSupport
         $methods = array_filter(
             $allMethods,
             function (\ReflectionMethod $method) use ($class) {
-                return $method->getFileName() === $class->getFileName() // only methods declared in the model
-                    && !$method->getParameters() // relationships have no parameters
+                return // $method->getFileName() === $class->getFileName() && // only methods declared in the model
+                    !$method->getParameters() // relationships have no parameters
                     && $method->hasReturnType() // check if the method has a return type
                     && is_subclass_of($method->getReturnType()->getName(), \Illuminate\Database\Eloquent\Relations\Relation::class); // check if the return type is a subclass of Relation
             }
