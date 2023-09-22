@@ -297,7 +297,7 @@ trait HasAdminSupport
         $allMethods = $class->getMethods(\ReflectionMethod::IS_PUBLIC);
         $methods = array_filter(
             $allMethods,
-            function (\ReflectionMethod $method) use ($class) {
+            function (\ReflectionMethod $method) {
                 return // $method->getFileName() === $class->getFileName() && // only methods declared in the model
                     !$method->getParameters() // relationships have no parameters
                     && $method->hasReturnType() // check if the method has a return type

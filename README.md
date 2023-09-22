@@ -8,8 +8,6 @@ Um painel administrativo altamente personalizável para Laravel 8.x, construído
 
  > **Nota:** Este pacote ainda está em desenvolvimento e não está pronto para uso em produção.
 
- > **Nota:** Este é um projeto guiado por documentação. O código ainda não está pronto.
-
  > Se você está instalando este pacote em um projeto existente, certifique-se de ter um backup de seus arquivos.
 
 Pré-requisitos:
