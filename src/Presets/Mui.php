@@ -36,7 +36,7 @@ class Mui extends Preset
             return Arr::except($packages, ['axios']);
         }
         return [
-            '@arandu/laravel-mui-admin' => '^0.0.5',
+            '@arandu/laravel-mui-admin' => '^0.0.7',
             '@babel/preset-react' => '^7.13.13',
             '@emotion/react' => '^11.10.5',
             '@emotion/styled' => '^11.10.5',

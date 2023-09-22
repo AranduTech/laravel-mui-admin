@@ -90,6 +90,20 @@ class User extends Authenticatable
 }
 ```
 
+Configure a autenticação para a API. Recomendamos o [Sanctum](https://laravel.com/docs/8.x/sanctum). Exemplo:
+
+```php
+# config/auth.php
+    // ...
+    'guards' => [
+        // ...
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
+    ],
+```
+
 # Uso Básico
 
  - Criar os papéis iniciais
@@ -362,7 +376,7 @@ O componente `RepositoryIndex` do pacote `@arandu/laravel-mui-admin` é respons�
 
 #### Personalizar as colunas da página do modelo
 
-Por padrão, o componente `RepositoryIndex` renderizará uma tabela com colunas correspondentes à propriedade `$fillable` do modelo. Se você quiser personalizar as colunas, deve criar uma classe em seu projeto em `app/Admin/Tables/{$model}Table.php`. Por exemplo, se o modelo é chamado `Post`, a classe deve ser chamada `PostTable`. Esta classe deve estender a classe `Arandu\LaravelMuiAdmin\Contracts\Table`.
+Por padrão, o componente `RepositoryIndex` renderizará uma tabela com colunas correspondentes à propriedade `$fillable` do modelo. Se você quiser personalizar as colunas, deve criar uma classe em seu projeto em `app/Admin/Tables/{$model}Table.php`. Por exemplo, se o modelo é chamado `Post`, a classe deve ser chamada `PostTable`.
 
 A classe criada deve ter pelo menos um método chamado `default`, que será usado quando nenhum outro método for especificado. Por exemplo, se você quiser personalizar as colunas para o modelo `Post`, deve criar uma classe em `app/Admin/Tables/PostTable.php` com o seguinte conteúdo:
 
@@ -371,9 +385,7 @@ A classe criada deve ter pelo menos um método chamado `default`, que será usad
 
 namespace App\Admin\Tables;
 
-use Arandu\LaravelMuiAdmin\Contracts\Table;
-
-class PostTable extends Table
+class PostTable 
 {
     public function default()
     {
