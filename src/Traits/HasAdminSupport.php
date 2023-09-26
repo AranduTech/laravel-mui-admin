@@ -38,6 +38,7 @@ trait HasAdminSupport
             'softDelete' => $this->hasSoftDelete(),
             'web' => array_keys($this->getWebUrls()),
             'relations' => $this->getRelationships(),
+            'class' => static::class,
         ];
     }
 
