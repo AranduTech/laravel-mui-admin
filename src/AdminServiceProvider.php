@@ -31,6 +31,11 @@ class AdminServiceProvider extends ServiceProvider
             $this->unsignedBigInteger('created_by')->nullable();
             $this->unsignedBigInteger('updated_by')->nullable();
         });
+
+        Blueprint::macro('dropTracksChanges', function () {
+            $this->dropColumn('created_by');
+            $this->dropColumn('updated_by');
+        });
     }
 
     public function register()
