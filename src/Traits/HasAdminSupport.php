@@ -281,7 +281,13 @@ trait HasAdminSupport
                 $url = $url['url'];
             }
 
-            Route::$method($url, [RepositoryController::class, $action])
+            $overrides = config('admin.cms.controller_overrides', []);
+
+            $controller = isset($overrides[static::class])
+                ? $overrides[static::class]
+                : RepositoryController::class;
+
+            Route::$method($url, [$controller, $action])
                 ->name('admin.' . $this->getSchemaName() . '.' . $action);
         }
     }

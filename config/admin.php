@@ -90,4 +90,46 @@ return [
     ],
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | CMS Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The following configuration options are used to control the CMS of the
+    | admin panel. The CMS is used to manage the content of the application.
+    |
+    */
+    'cms' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | Controller overrides
+        |--------------------------------------------------------------------------
+        |
+        | This value is the list of the controller overrides used by the CMS.
+        | If you need to create a custom controller for a model, you can add
+        | the model class name as the key, and the controller class name as
+        | the value. The controller class should extend the 
+        | 'Arandu\LaravelMuiAdmin\Http\Controllers\RepositoryController' class
+        | for ease of use.
+        |
+        */
+        'controller_overrides' => [
+            // 'App\Models\Example' => 'App\Http\Controllers\ExampleController',
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Tracking Model Changes
+        |--------------------------------------------------------------------------
+        |
+        | This is the model used as User model. This model will be used to track
+        | the changes made to the models. For example, when a model is created,
+        | the user that created the model will be stored in the 'created_by'
+        | column. This model will be used to retrieve the user that created
+        | or updated the model.
+        |
+        */
+        'user_model' => env('ADMIN_CMS_USER_MODEL', 'App\Models\User'),
+    ],
 ];

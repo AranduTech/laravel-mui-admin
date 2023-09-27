@@ -6,6 +6,7 @@ use Arandu\LaravelMuiAdmin\Commands\RoleAndPermissions;
 use Arandu\LaravelMuiAdmin\Commands\CredentialsCommand;
 use Arandu\LaravelMuiAdmin\Services\AdminService;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Schema\Blueprint;
 use Laravel\Ui\UiCommand;
 
 class AdminServiceProvider extends ServiceProvider
@@ -24,6 +25,11 @@ class AdminServiceProvider extends ServiceProvider
 
             $command->info('Mui scaffolding installed successfully.');
             $command->comment('Please run "npm install && npm run dev" to compile your fresh scaffolding.');
+        });
+
+        Blueprint::macro('tracksChanges', function () {
+            $this->unsignedBigInteger('created_by')->nullable();
+            $this->unsignedBigInteger('updated_by')->nullable();
         });
     }
 
