@@ -5,13 +5,14 @@ namespace Arandu\LaravelMuiAdmin;
 use Arandu\LaravelMuiAdmin\Commands\RoleAndPermissions;
 use Arandu\LaravelMuiAdmin\Commands\CredentialsCommand;
 use Arandu\LaravelMuiAdmin\Services\AdminService;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Laravel\Ui\UiCommand;
 
 class AdminServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(AdminService $adminService)
     {
         // $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         // $this->loadViewsFrom(__DIR__.'/resources/views', 'admin');
@@ -28,14 +29,25 @@ class AdminServiceProvider extends ServiceProvider
         });
 
         Blueprint::macro('tracksChanges', function () {
-            $this->unsignedBigInteger('created_by')->nullable();
-            $this->unsignedBigInteger('updated_by')->nullable();
+            $this->unsignedBigInteger('created_by')->nullable()->before('created_at');
+            $this->unsignedBigInteger('updated_by')->nullable()->before('updated_at');
         });
 
         Blueprint::macro('dropTracksChanges', function () {
             $this->dropColumn('created_by');
             $this->dropColumn('updated_by');
         });
+
+        $models = $adminService->getModelsWithCrudSupport();
+
+        $enforceMorphMap = [];
+
+        foreach ($models as $model) {
+            $instance = new $model();
+            $enforceMorphMap[$instance->getSchemaName()] = $model;
+        }
+
+        Relation::enforceMorphMap($enforceMorphMap);
     }
 
     public function register()
