@@ -103,7 +103,7 @@ return [
 
         /*
         |--------------------------------------------------------------------------
-        | Controller overrides
+        | API Controller overrides
         |--------------------------------------------------------------------------
         |
         | This value is the list of the controller overrides used by the CMS.

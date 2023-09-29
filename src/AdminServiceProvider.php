@@ -44,7 +44,7 @@ class AdminServiceProvider extends ServiceProvider
 
         foreach ($models as $model) {
             $instance = new $model();
-            $enforceMorphMap[$instance->getSchemaName()] = $model;
+            $enforceMorphMap[$instance->getSchemaName()] = \Illuminate\Support\Str::replaceFirst('\\', '', $model);
         }
 
         Relation::enforceMorphMap($enforceMorphMap);
