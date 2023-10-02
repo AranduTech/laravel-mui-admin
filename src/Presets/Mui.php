@@ -19,7 +19,6 @@ class Mui extends Preset
         static::updatePackages(false);
         static::updatePackages();
         static::updateWebpackConfiguration();
-        static::updateBootstrapping();
         static::updateComponent();
         static::removeNodeModules();
     }
@@ -36,7 +35,7 @@ class Mui extends Preset
             return Arr::except($packages, ['axios']);
         }
         return [
-            '@arandu/laravel-mui-admin' => '^0.0.10',
+            '@arandu/laravel-mui-admin' => '^0.1.0',
             '@babel/preset-react' => '^7.13.13',
             '@emotion/react' => '^11.10.5',
             '@emotion/styled' => '^11.10.5',
@@ -81,18 +80,8 @@ class Mui extends Preset
         );
 
         (new Filesystem())->copyDirectory(
-            __DIR__.'/../../stubs/css',
-            resource_path('css')
-        );
-
-        (new Filesystem())->copyDirectory(
             __DIR__.'/../../stubs/js',
             resource_path('js')
-        );
-
-        (new Filesystem())->copyDirectory(
-            __DIR__.'/../../stubs/lang',
-            resource_path('lang')
         );
 
         (new Filesystem())->copyDirectory(
@@ -115,29 +104,6 @@ class Mui extends Preset
            'app/Http/Controllers/Auth'
         );
 
-        // (new Filesystem())->copy(
-        //     __DIR__.'/../../src/Http/Controllers/RendererController.php',
-        //    'app/Http/Controllers/RendererController.php'
-        // );
-        
-        // (new Filesystem())->copy(
-        //    __DIR__.'/../../src/Http/Controllers/RepositoryController.php',
-        //    'app/Http/Controllers/RepositoryController.php'
-        // );
-
-        (new Filesystem())->copyDirectory(
-            __DIR__.'/../../src/Commands',
-           'app/Console/Commands'
-        );
     }
 
-    /**
-     * Update the bootstrapping files.
-     *
-     * @return void
-     */
-    protected static function updateBootstrapping()
-    {
-        copy(__DIR__.'/../../stubs/app.js', resource_path('js/app.js'));
-    }
 }

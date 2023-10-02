@@ -19,20 +19,8 @@
             @csrf
         </form>
     @endauth
-    <div id="react-injections" style="display: none">    
-        @if (isset($admin))
-        
-            @foreach ($admin->getRoutes() as $key => $value)
-                <div id="route-data-{{ $key }}" data-value="{{ $value }}"></div>
-            @endforeach
-            
-        @endif
-
+    <div id="react-injections" style="display: none">
         @if (isset($js))
-            @foreach ($js->all() as $key => $value)
-                <div id="react-data-{{ $key }}" data-value="{{ is_array($value) ? json_encode($value) : $value }}" {{ is_array($value) ? 'data-json=1' : '' }}></div>
-            @endforeach
-            
             @foreach ($js->catchables() as $errorKey)
                 @error($errorKey)
                     <div id="error-{{ $errorKey }}" data-value="{{ $message }}"></div>

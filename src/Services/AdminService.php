@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use App\Providers\RouteServiceProvider;
+use Arandu\LaravelMuiAdmin\Http\Controllers\InitController;
 use Arandu\LaravelMuiAdmin\Http\Controllers\RendererController;
 use Arandu\LaravelMuiAdmin\Http\Controllers\RepositoryController;
 use Illuminate\Database\Eloquent\Model;
@@ -103,6 +104,8 @@ class AdminService
         if (isset($options['middleware'])) {
             $middleware = $options['middleware'];
         }
+
+        Route::middleware($middleware)->get('/admin/init', [InitController::class, 'init']);
 
         Route::group([
             'middleware' => $middleware,

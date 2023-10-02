@@ -18,13 +18,10 @@ class RendererController extends Controller
         $user = auth()->user();
 
         if (!$user) {
-            return view('guest')->with(['admin' => $admin, 'js' => $js]);
+            return view('guest')->with(['js' => $js]);
         }
 
-        $js->set('user', $user);
-        $js->set('model-schema', $admin->getModelSchema());
-
-        return view('admin')->with([
+        return $user->getAdminView()->with([
             'admin' => $admin, 
             'js' => $js
         ]);
