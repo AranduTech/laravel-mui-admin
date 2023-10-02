@@ -1,14 +1,15 @@
 /* eslint-disable no-undef */
 import renderer from './renderer';
 
-import { blade } from '@arandu/laravel-mui-admin';
-
-if (blade('user')) {
-    require('./models');
-    require('./macros');
-}
+import { app } from '@arandu/laravel-mui-admin';
 
 export default (rendererName) => {
+
+    if (app.getDefinition('data.user')) {
+        require('./models');
+        require('./macros');
+    }
+
     if (!Object.keys(renderer).includes(rendererName)) {
         throw new Error(`Renderer ${rendererName} is not defined.`);
     }

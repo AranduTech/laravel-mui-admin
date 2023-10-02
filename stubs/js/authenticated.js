@@ -1,7 +1,11 @@
-// import bootstrapApp from '@arandu/laravel-mui-admin/lib/bootstrapApp';
+// import { bootstrapApp, app } from '@arandu/laravel-mui-admin';
 
 // import createApp from './src/app';
 // import config from './src/config';
 
 // bootstrapApp(config);
-// createApp('authenticated');
+
+// app.init().then(() => {
+//     createApp('authenticated');
+// });
+
