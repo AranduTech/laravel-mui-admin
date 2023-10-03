@@ -11,11 +11,14 @@ class InitController extends BaseController
 
     public function init(AdminService $adminService, JsService $jsService)
     {
-        $jsService->set('user', auth()->user());
+        $user = auth()->user();
+        $jsService->set('user', $user);
 
         return response()->json([
             'routes' => $adminService->getRoutes(),
-            'models' => $adminService->getModelSchema(),
+            'models' => $user
+                ? $adminService->getModelSchema()
+                : null,
             'data' => $jsService->all(),
         ]);
     }

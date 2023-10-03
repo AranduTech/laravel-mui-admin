@@ -27,6 +27,15 @@ class AdminService
         'ignition.styles',
     ];
 
+    private $guestRoutes = [
+        'login',
+        'register',
+        'password.request',
+        'password.email',
+        'password.reset',
+        'password.update',
+    ];
+
 
     public function __construct()
     {
@@ -36,6 +45,10 @@ class AdminService
 
         foreach ($routeCollection as $name => $route) {
             if (in_array($name, $this->ignoreRoutes)) {
+                continue;
+            }
+
+            if (!auth()->user() && !in_array($name, $this->guestRoutes)) {
                 continue;
             }
 
@@ -100,12 +113,14 @@ class AdminService
      */
     public function api($options = [])
     {
+        if (!isset($options['init']) || $options['init'] === true) {
+            Route::get('/admin/init', [InitController::class, 'init']);
+        }
+
         $middleware = ['auth:sanctum', 'verified'];
         if (isset($options['middleware'])) {
             $middleware = $options['middleware'];
         }
-
-        Route::middleware($middleware)->get('/admin/init', [InitController::class, 'init']);
 
         Route::group([
             'middleware' => $middleware,
