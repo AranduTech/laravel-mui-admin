@@ -5,7 +5,7 @@ import { route } from '@arandu/laravel-mui-admin';
 
 import Error from '../views/Error';
 
-export default [
+export default () => [
     {
         path: '/',
         element: (

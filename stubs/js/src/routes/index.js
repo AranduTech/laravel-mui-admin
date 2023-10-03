@@ -9,18 +9,18 @@ export default async (rendererName) => {
         // Load the admin app.
         const admin = await import(/* webpackChunkName: "admin-router" */ './admin');
 
-        return createBrowserRouter(admin.default);
+        return createBrowserRouter(admin.default());
     }
 
     if ('authenticated' === rendererName) {
         // Load the authenticated app.
         const authenticated = await import(/* webpackChunkName: "authenticated-router" */ './authenticated');
 
-        return createBrowserRouter(authenticated.default);
+        return createBrowserRouter(authenticated.default());
     }
 
     // Load the guest app.
     const guest = await import(/* webpackChunkName: "guest-router" */ './guest');
 
-    return createBrowserRouter(guest.default);
+    return createBrowserRouter(guest.default());
 };

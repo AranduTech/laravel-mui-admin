@@ -7,7 +7,7 @@ import Error from '../views/Error';
 
 // import api from '../api';
 
-export default [
+export default () => [
     {
         path: route('home'),
         element: (
