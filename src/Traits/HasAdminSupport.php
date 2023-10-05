@@ -11,6 +11,9 @@ use Illuminate\Support\Str;
 
 trait HasAdminSupport
 {
+
+    use DeactivatesAppends;
+
     public function getSyncs()
     {
         if (!isset($this->syncs)) {
