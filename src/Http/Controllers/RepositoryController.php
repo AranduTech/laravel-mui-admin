@@ -9,6 +9,9 @@ use Illuminate\Support\Str;
 
 class RepositoryController extends Controller
 {
+
+    protected $reducedColumns = ['id', 'name'];
+
     /**
      * Obtém a classe da entidade.
      *
@@ -83,7 +86,11 @@ class RepositoryController extends Controller
             $query = $query->whereMatchesFilter($request->filters);
         }
 
-        $query = $query->paginate($per_page);
+        $columns = $request->has('reducedColumns')
+            ? $this->reducedColumns
+            : ['*'];
+
+        $query = $query->paginate($per_page, $columns);
 
         return response()->json($query, 200);
 
