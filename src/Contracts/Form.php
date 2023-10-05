@@ -48,7 +48,7 @@ abstract class Form
 
     public function getRequestAction()
     {
-        [$name, $action] = explode('.', request()->route()->getName());
+        [$prefix, $name, $action] = explode('.', request()->route()->getName());
 
         return $action;
     }

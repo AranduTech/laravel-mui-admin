@@ -153,9 +153,9 @@ class AdminService
             return $schema;
         };
 
-        if (config('admin.cache.key', 'admin.cache')) {
+        if ($cacheKey = config('admin.cache.key', 'admin.cache')) {
             return Cache::remember(
-                config('admin.cache.key', 'admin.cache') . '.models.schema', 
+                $cacheKey . '.models.schema', 
                 config('admin.cache.ttl', 60), 
                 $callback
             );

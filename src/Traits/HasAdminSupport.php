@@ -83,7 +83,7 @@ trait HasAdminSupport
     /**
      * Obtém uma instância da tabela da entidade.
      *
-     * @return null|\App\Contracts\Table
+     * @return null|\Arandu\LaravelMuiAdmin\Contracts\Table
      */
     public function getTableInstance()
     {
@@ -144,14 +144,22 @@ trait HasAdminSupport
     {
         $definitions = [];
 
-        // dd('App\\Frontend\\Forms\\' . class_basename($this) . 'Form');
         if ($tableInstance = $this->getTableInstance()) {
             // iterate through instance methods
             foreach (get_class_methods($tableInstance) as $method) {
-                // if (in_array($method, ['getExtra', 'getRequestFormType', 'getRequestAction', 'validate'])) {
-                //     continue;
-                // }
-                $definitions[$method] = $tableInstance->{$method}();
+                $reflection = new \ReflectionMethod($tableInstance, $method);
+                if ($reflection->getDeclaringClass()->getName() !== $this->getTableClass()) {
+                    continue;
+                }
+                $definitions[$method] = [
+                    'columns' => $tableInstance->{$method}()
+                ];
+                if (
+                    $tableInstance->getFilterFormClass() 
+                    && method_exists($tableInstance->filter(), $method)
+                ) {
+                    $definitions[$method]['filter'] = $tableInstance->filter()->{$method}();
+                }
             }
 
             return $definitions;
@@ -165,7 +173,9 @@ trait HasAdminSupport
         }
 
         return [
-            'default' => $definitions,
+            'columns' => [
+                'default' => $definitions,
+            ],
         ];
     }
 
