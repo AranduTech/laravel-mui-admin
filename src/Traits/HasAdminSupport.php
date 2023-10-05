@@ -173,8 +173,8 @@ trait HasAdminSupport
         }
 
         return [
-            'columns' => [
-                'default' => $definitions,
+            'default' => [
+                'columns' => $definitions,
             ],
         ];
     }
