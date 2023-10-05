@@ -83,7 +83,9 @@ class RepositoryController extends Controller
         }
 
         if ($request->has('filters')) {
-            $query = $query->whereMatchesFilter($request->filters);
+            $query = $query->whereMatchesFilter(
+                json_decode($request->filters, true)
+            );
         }
 
         $columns = $request->has('reducedColumns')
