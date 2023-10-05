@@ -34,6 +34,7 @@ class AdminService
         'password.email',
         'password.reset',
         'password.update',
+        'home',
     ];
 
 
