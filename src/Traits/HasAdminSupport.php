@@ -207,6 +207,11 @@ trait HasAdminSupport
         return $query;
     }
 
+    public function scopeWhereMatchesFilter($query, $filters)
+    {
+        return $query;
+    }
+
     public function getWebUrls()
     {
         return [

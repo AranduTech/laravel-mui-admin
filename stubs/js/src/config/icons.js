@@ -3,6 +3,7 @@ import ChevronRight from '@mui/icons-material/ChevronRight';
 import Close from '@mui/icons-material/Close';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import FilterList from '@mui/icons-material/FilterList';
 import HomeOutlined from '@mui/icons-material/HomeOutlined';
 import Inbox from '@mui/icons-material/MoveToInbox';
 import Logout from '@mui/icons-material/Logout';
@@ -19,6 +20,7 @@ export default {
     close: Close,
     expandLess: ExpandLess,
     expandMore: ExpandMore,
+    filterList: FilterList,
     homeOutlined: HomeOutlined,
     inbox: Inbox,
     logout: Logout,

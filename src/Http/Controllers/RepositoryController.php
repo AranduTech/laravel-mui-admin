@@ -79,6 +79,10 @@ class RepositoryController extends Controller
             $query = $query->search($request->q);
         }
 
+        if ($request->has('filters')) {
+            $query = $query->whereMatchesFilter($request->filters);
+        }
+
         $query = $query->paginate($per_page);
 
         return response()->json($query, 200);
