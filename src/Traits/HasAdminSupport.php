@@ -215,6 +215,11 @@ trait HasAdminSupport
         return $query;
     }
 
+    public function scopeApplyOrderBy($query, $column, $direction)
+    {
+        return $query->orderBy($column, $direction);
+    }
+    
     public function getWebUrls()
     {
         return [

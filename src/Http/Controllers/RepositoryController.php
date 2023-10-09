@@ -88,6 +88,11 @@ class RepositoryController extends Controller
             );
         }
 
+        if ($request->has('order_by')) {
+            [$field, $direction] = explode(':', $request->order_by);
+            $query->applyOrderBy($field, $direction);
+        }
+
         $columns = $request->has('reducedColumns')
             ? $this->reducedColumns
             : ['*'];
