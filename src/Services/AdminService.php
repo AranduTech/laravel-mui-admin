@@ -2,10 +2,10 @@
 
 namespace Arandu\LaravelMuiAdmin\Services;
 
+use App\Providers\RouteServiceProvider;
 use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
-use App\Providers\RouteServiceProvider;
 use Arandu\LaravelMuiAdmin\Http\Controllers\InitController;
 use Arandu\LaravelMuiAdmin\Http\Controllers\RendererController;
 use Arandu\LaravelMuiAdmin\Http\Controllers\RepositoryController;
@@ -74,12 +74,12 @@ class AdminService
             Route::get(RouteServiceProvider::HOME, [RendererController::class, 'render'])
                 ->name('home');
         }
-        $middleware = ['auth:sanctum', 'verified'];
+        $middleware = ['auth', 'verified'];
         if (isset($options['middleware'])) {
             $middleware = $options['middleware'];
         }
         if (!isset($options['profile']) || false !== $options['profile']) {
-            Route::middleware(['auth:sanctum'])
+            Route::middleware(['auth'])
                 ->get('/profile', [RendererController::class, 'render'])
                 ->name('profile');
         }
@@ -118,7 +118,7 @@ class AdminService
             Route::get('/admin/init', [InitController::class, 'init']);
         }
 
-        $middleware = ['auth:sanctum', 'verified'];
+        $middleware = ['auth', 'verified'];
         if (isset($options['middleware'])) {
             $middleware = $options['middleware'];
         }

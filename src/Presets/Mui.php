@@ -75,32 +75,34 @@ class Mui extends Preset
      */
     protected static function updateComponent()
     {
-        (new Filesystem())->delete(
+        $filesystem = new Filesystem();
+
+        $filesystem->delete(
             resource_path('js/components/ExampleComponent.vue')
         );
 
-        (new Filesystem())->copyDirectory(
+        $filesystem->copyDirectory(
             __DIR__.'/../../stubs/js',
             resource_path('js')
         );
 
-        (new Filesystem())->copyDirectory(
+        $filesystem->copyDirectory(
             __DIR__.'/../../stubs/sass',
             resource_path('sass')
         );
 
-        (new Filesystem())->copyDirectory(
+        $filesystem->copyDirectory(
             __DIR__.'/../../stubs/views',
             resource_path('views')
         );
 
-        (new Filesystem())->copyDirectory(
+        $filesystem->copyDirectory(
             __DIR__.'/../../seeders',
            'database/seeders'
         );
 
-        (new Filesystem())->copyDirectory(
-            __DIR__.'/../../src/Http/Controllers/Auth',
+        $filesystem->copyDirectory(
+            __DIR__.'/../../stubs/controllers/Auth',
            'app/Http/Controllers/Auth'
         );
 
