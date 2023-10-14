@@ -405,8 +405,16 @@ class RepositoryController extends Controller
     {
         foreach ($item->getSyncs() as $relation) {
             if ($request->has($relation) && method_exists($item, $relation)) {
+                $key = -1;
                 $item->{$relation}()->sync(
-                    collect($request->{$relation})->pluck('id')
+                    collect($request->{$relation})->mapWithKeys(function ($item) use (&$key) {
+                        if (!$item['pivot']) {
+                            $key++;
+                            return [$key => $item['id']];
+                        }
+                        $key = $item['id'];
+                        return [$item['id'] => $item['pivot']];
+                    })
                 );
             }
         }
