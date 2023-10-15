@@ -285,6 +285,9 @@ trait HasAdminSupport
             'get' => 'read',
             'update' => 'update',
             'delete' => 'delete',
+            'restore' => 'delete',
+            'forceDelete' => 'delete',
+            'massDelete' => 'delete',
         ];
 
         if (!isset($map[$action])) {

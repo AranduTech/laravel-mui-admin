@@ -354,7 +354,7 @@ class RepositoryController extends Controller
         /** @var \Illuminate\Contracts\Auth\Access\Authorizable */
         $user = auth()->user();
 
-        if (!$user->can('restore ' . $this->getTableName($request))) {
+        if (!$user->can('delete ' . $this->getTableName($request))) {
             abort(403, 'Unauthorized.');
         }
 
