@@ -359,6 +359,7 @@ class RepositoryController extends Controller
         }
 
         $items = $this->beginQuery($request)
+            ->onlyTrashed()
             ->whereCurrentUserCan('delete')
             ->whereIn('id', $request->ids)
             ->get();
