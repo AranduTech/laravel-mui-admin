@@ -359,7 +359,7 @@ class RepositoryController extends Controller
         }
 
         $items = $this->beginQuery($request)
-            ->whereCurrentUserCan('restore')
+            ->whereCurrentUserCan('delete')
             ->whereIn('id', $request->ids)
             ->get();
 
