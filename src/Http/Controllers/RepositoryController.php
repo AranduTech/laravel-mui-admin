@@ -374,6 +374,32 @@ class RepositoryController extends Controller
         return response()->json(['message' => 'OK'], 200);
     }
 
+    public function massForceDelete(Request $request)
+    {
+        /** @var \Illuminate\Contracts\Auth\Access\Authorizable */
+        $user = auth()->user();
+
+        if (!$user->can('delete ' . $this->getTableName($request))) {
+            abort(403, 'Unauthorized.');
+        }
+
+        $items = $this->beginQuery($request)
+            ->whereCurrentUserCan('delete')
+            ->onlyTrashed()
+            ->whereIn('id', $request->ids)
+            ->get();
+
+        if (!$items) {
+            abort(404);
+        }
+
+        foreach ($items as $item) {
+            $item->forceDelete();
+        }
+
+        return response()->json(['message' => 'OK'], 200);
+    }
+
     /**
      * Cria uma entity para a controller.
      *

@@ -248,6 +248,10 @@ trait HasAdminSupport
                 'url' => $this->getSchemaName() . '/{id}',
                 'method' => 'delete',
             ],
+            'massDelete' => [
+                'url' => Str::plural($this->getSchemaName()) . '/delete',
+                'method' => 'post',
+            ]
         ];
 
         if ($this->hasSoftDelete()) {
@@ -258,6 +262,14 @@ trait HasAdminSupport
             $apiUrls['forceDelete'] = [
                 'url' => $this->getSchemaName() . '/{id}/force',
                 'method' => 'delete',
+            ];
+            $apiUrls['massRestore'] = [
+                'url' => Str::plural($this->getSchemaName()) . '/restore',
+                'method' => 'post',
+            ];
+            $apiUrls['massForceDelete'] = [
+                'url' => Str::plural($this->getSchemaName()) . '/forceDelete',
+                'method' => 'post',
             ];
         }
 
