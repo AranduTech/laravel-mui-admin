@@ -102,8 +102,6 @@ class RepositoryController extends Controller
         $query = $query->paginate($per_page, $columns);
 
         return response()->json($query, 200);
-
-        // return view('users.index')->with('users',$users);
     }
 
     /**
@@ -516,13 +514,32 @@ class RepositoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function export()
+    public function export(Request $request)
     {
+        // Queries for export
+        $query = $this->beginQuery($request)
+                    ->whereCurrentUserCan('read');
+
+        if ($request->has('tab')) {
+            $query = $query->whereBelongsToTab($request->tab);
+        }
+
+        if ($request->has('q') && !empty($request->q)) {
+            $query = $query->search($request->q);
+        }
+
+        if ($request->has('filters')) {
+            $query = $query->whereMatchesFilter(
+                json_decode($request->filters, true)
+            );
+        }
+
+        // Create new spreadsheet
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-        $Model = $this->entity(request());
+        $Model = $this->entity($request);
 
-        $sheet = $Model::createExportablesSpreadsheet($spreadsheet);
+        $sheet = $Model::createExportablesSpreadsheet($spreadsheet, $query);
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
