@@ -21,15 +21,15 @@ trait Exportable
 
         $query_results = $query->select($columns)->get();
 
-        // Preenche as células abaixo com os dados
-        foreach ($query_results as $rowIndex => $item) {
-            foreach ($item->toArray() as $columnIndex => $value) {
-                $sheet->setCellValueByColumnAndRow($columnIndex + 1, $rowIndex + 2, $value);
-            }
+        // Preenche as células abaixo com os dados da query
+        $data = [];
+        foreach ($query_results as $item) {
+            $data[] = $item->toArray();
         }
+        $sheet->fromArray($data, null, 'A2');
 
         // Define a cor de fundo
-        $sheet->getStyle('A1:Z1000') // Intervalo ajustável de acordo à necessidade
+        $sheet->getStyle('A1:AZ1000') // Intervalo ajustável de acordo à necessidade
             ->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()
