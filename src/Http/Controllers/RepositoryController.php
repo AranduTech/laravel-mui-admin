@@ -435,7 +435,7 @@ class RepositoryController extends Controller
                 $key = -1;
                 $item->{$relation}()->sync(
                     collect($request->{$relation})->mapWithKeys(function ($item) use (&$key) {
-                        if (!$item['pivot']) {
+                        if (!isset($item['pivot'])) {
                             $key++;
                             return [$key => $item['id']];
                         }
