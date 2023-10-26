@@ -4,12 +4,9 @@ namespace Arandu\LaravelMuiAdmin\Commands;
 
 use Arandu\LaravelMuiAdmin\Services\AdminService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Traits\Macroable;
 
 class ManifestCommand extends Command
 {
-
-    use Macroable;
 
     /** @var AdminService */
     private $adminService;
