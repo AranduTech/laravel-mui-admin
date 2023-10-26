@@ -14,7 +14,14 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.4|^8.0",
+        "ext-dom": "*",
+        "ext-gd": "*",
+        "ext-simplexml": "*",
+        "ext-xml": "*",
+        "ext-xmlreader": "*",
+        "ext-xmlwriter": "*",
+        "ext-zip": "*",
         "laravel/ui": "^3.4",
         "illuminate/filesystem": "^8.83",
         "illuminate/support": "^8.83",
@@ -23,7 +30,8 @@
         "illuminate/database": "^8.83",
         "illuminate/http": "^8.83",
         "illuminate/macroable": "^8.83",
-        "spatie/laravel-permission": "^5.11"
+        "spatie/laravel-permission": "^5.11",
+        "phpoffice/phpspreadsheet": "^1.29"
     },
     "extra": {
         "laravel": {

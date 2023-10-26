@@ -5,6 +5,7 @@ namespace Arandu\LaravelMuiAdmin;
 use Arandu\LaravelMuiAdmin\Commands\RoleAndPermissions;
 use Arandu\LaravelMuiAdmin\Commands\CredentialsCommand;
 use Arandu\LaravelMuiAdmin\Commands\MakeReactComponent;
+use Arandu\LaravelMuiAdmin\Commands\ManifestCommand;
 use Arandu\LaravelMuiAdmin\Services\AdminService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
@@ -63,6 +64,7 @@ class AdminServiceProvider extends ServiceProvider
                 CredentialsCommand::class,
                 RoleAndPermissions::class,
                 MakeReactComponent::class,
+                ManifestCommand::class,
             ]);
         }
     }

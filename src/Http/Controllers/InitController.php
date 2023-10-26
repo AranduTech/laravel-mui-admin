@@ -21,12 +21,18 @@ class InitController extends BaseController
             static::onInit($jsService);
         }
 
-        return response()->json([
-            'routes' => $adminService->getRoutes(),
-            'models' => $user
-                ? $adminService->getModelSchema()
-                : null,
-            'data' => $jsService->all(),
-        ]);
+        $manifest = config('admin.manifest', 'api') === 'api'
+            ? [
+                'routes' => $adminService->getRoutes(),
+                'models' => $user
+                    ? $adminService->getModelSchema()
+                    : null,
+            ]
+            : [];
+
+        return response()->json(array_merge(
+            $manifest,
+            ['data' => $jsService->all()]
+        ));
     }
 }

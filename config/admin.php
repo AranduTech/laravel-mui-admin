@@ -2,6 +2,27 @@
 
 return [
 
+    /**
+     * --------------------------------------------------------------------------
+     * Models & Routes Manifest
+     * --------------------------------------------------------------------------
+     * 
+     * This value configures how the SPA will receive data about the models
+     * and routes available in the application. This is used to generate the
+     * admin panel.
+     * 
+     * Possible values are 'api' and 'bundle'. If you choose 'api', the manifest
+     * data will be appended to the initialization API response. If you choose
+     * 'bundle', the manifest data will be genereated into 
+     * `resources/js/src/config/boot.json`, and you should include this file
+     * in your main configuration file.
+     * 
+     * If you choose 'bundle', you should run `php artisan admin:manifest` after
+     * any change in the models or routes and during deployment.
+     *
+     */
+    'manifest' => env('ADMIN_MANIFEST', 'api'),
+
     /*
     |--------------------------------------------------------------------------
     | Roles
