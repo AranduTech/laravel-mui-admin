@@ -5,7 +5,9 @@ namespace Arandu\LaravelMuiAdmin\Http\Controllers;
 use Arandu\LaravelMuiAdmin\Services\AdminService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class RepositoryController extends Controller
 {
@@ -486,5 +488,53 @@ class RepositoryController extends Controller
         return response()->json([
             'data' => $field['list']($requestSearch),
         ]);
+    }
+
+    /**
+     * Faz a importação de dados a partir de uma planilha
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+        $file = $request->file('file')->store('temp');
+
+        $spreadsheet = IOFactory::load(storage_path('app/' . $file)); // Carrega o arquivo Excel
+
+        $Model = $this->entity($request);
+
+        $items = $Model::createElementsFromSpreadsheet($spreadsheet);
+
+        // Deleta arquivo temporário
+        Storage::delete($file);
+
+        return response()->json(['message' => 'OK'], 200);
+    }
+
+    /**
+     * Faz o download de uma planilha modelo, configurada em cada model
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function export()
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+        $Model = $this->entity(request());
+
+        $sheet = $Model::createExportablesSpreadsheet($spreadsheet);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        $filename = Str::plural($Model->getSchemaName());
+
+        // Prepare headers
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. $filename .'.xlsx"');
+
+        // Save to php://output
+        $writer->save('php://output');
+
+        return response()->json(['message' => 'OK'], 200);
     }
 }

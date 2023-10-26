@@ -39,6 +39,8 @@ trait HasAdminSupport
             'fields' => $this->getFieldsDefinition(),
             'tables' => $this->getTablesDefinition(),
             'softDelete' => $this->hasSoftDelete(),
+            'importable' => $this->hasImportable(),
+            'exportable' => $this->hasExportable(),
             'web' => array_keys($this->getWebUrls()),
             'relations' => $this->getRelationships(),
             'class' => static::class,
@@ -103,6 +105,22 @@ trait HasAdminSupport
     {
         return in_array(
             \Illuminate\Database\Eloquent\SoftDeletes::class,
+            class_uses_recursive(static::class)
+        );
+    }
+
+    public function hasImportable()
+    {
+        return in_array(
+            \Arandu\LaravelMuiAdmin\Traits\Importable::class,
+            class_uses_recursive(static::class)
+        );
+    }
+
+    public function hasExportable()
+    {
+        return in_array(
+            \Arandu\LaravelMuiAdmin\Traits\Exportable::class,
             class_uses_recursive(static::class)
         );
     }
@@ -270,6 +288,20 @@ trait HasAdminSupport
             $apiUrls['massForceDelete'] = [
                 'url' => Str::plural($this->getSchemaName()) . '/forceDelete',
                 'method' => 'post',
+            ];
+        }
+
+        if ($this->hasImportable()) {
+            $apiUrls['import'] = [
+                'url' => $this->getSchemaName() . '/import',
+                'method' => 'post',
+            ];
+        }
+
+        if ($this->hasExportable()) {
+            $apiUrls['export'] = [
+                'url' => $this->getSchemaName() . '/export',
+                'method' => 'get',
             ];
         }
 
