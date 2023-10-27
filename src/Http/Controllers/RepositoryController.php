@@ -497,6 +497,12 @@ class RepositoryController extends Controller
      */
     public function import(Request $request)
     {
+        $user = auth()->user();
+
+        if (!$user->can('create ' . $this->getTableName($request))) {
+            abort(403, 'Unauthorized.');
+        }
+
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv,txt',
         ]);
@@ -521,12 +527,12 @@ class RepositoryController extends Controller
 
             $data = [];
 
-            foreach ($cellIterator as $cell)
+            foreach ($cellIterator as $i => $cell)
             {
                 if ($isHeader) {
                     $header[] = $cell->getValue();
                 } else {
-                    $data[$header[$cell->getColumn() - 1]] = $cell->getValue();
+                    $data[$header[$i]] = $cell->getValue();
                 }
             }
 

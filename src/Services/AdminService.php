@@ -154,7 +154,7 @@ class AdminService
             return $schema;
         };
 
-        if ($cacheKey = config('admin.cache.key', 'admin.cache')) {
+        if ($cacheKey = config('admin.cache.key', 'admin.cache') && config('admin.manifest', 'api') === 'api') {
             return Cache::remember(
                 $cacheKey . '.models.schema', 
                 config('admin.cache.ttl', 60), 
@@ -199,7 +199,7 @@ class AdminService
             return $models->values();
         };
 
-        if (config('admin.cache.key', 'admin.cache')) {
+        if (config('admin.cache.key', 'admin.cache') && config('admin.manifest', 'api') === 'api') {
             return Cache::remember(
                 config('admin.cache.key', 'admin.cache') . '.models', 
                 config('admin.cache.ttl', 60), 

@@ -293,16 +293,13 @@ trait HasAdminSupport
 
         if ($this->hasImportable()) {
             $apiUrls['import'] = [
-                'url' => $this->getSchemaName() . '/import',
+                'url' => Str::plural($this->getSchemaName()) . '/import',
                 'method' => 'post',
             ];
         }
 
         if ($this->hasExportable()) {
-            $apiUrls['export'] = [
-                'url' => $this->getSchemaName() . '/export',
-                'method' => 'get',
-            ];
+            $apiUrls['export'] = Str::plural($this->getSchemaName()) . '/export';
         }
 
         return $apiUrls;
