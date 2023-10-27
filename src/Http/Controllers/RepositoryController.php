@@ -563,17 +563,46 @@ class RepositoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function export()
+    public function export(Request $request)
     {
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-        $Model = $this->entity(request());
+        $Model = $this->entity($request);
 
-        $sheet = $Model::createExportablesSpreadsheet($spreadsheet);
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $worksheet->fromArray([$Model::getExportsHeadings()], null, 'A1');
+
+        $query = $this->beginQuery($request)
+            ->whereCurrentUserCan('read');
+
+        if ($request->has('tab')) {
+            $query = $query->whereBelongsToTab($request->tab);
+        }
+
+        if ($request->has('q') && !empty($request->q)) {
+            $query = $query->search($request->q);
+        }
+
+        if ($request->has('filters')) {
+            $query = $query->whereMatchesFilter(
+                json_decode($request->filters, true)
+            );
+        }
+
+        $items = $query->get();
+
+        $data = [];
+
+        foreach ($items as $item) {
+            $data[] = $item->getExportsData();
+        }
+
+        $worksheet->fromArray($data, null, 'A2');
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
-        $filename = Str::plural($Model->getSchemaName());
+        $filename = Str::plural((new $Model)->getSchemaName());
 
         // Prepare headers
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
