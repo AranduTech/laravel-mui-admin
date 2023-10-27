@@ -49,7 +49,7 @@ class AdminService
                 continue;
             }
 
-            if (!auth()->user() && !in_array($name, $this->guestRoutes)) {
+            if (!app()->runningInConsole() && !auth()->user() && !in_array($name, $this->guestRoutes)) {
                 continue;
             }
 

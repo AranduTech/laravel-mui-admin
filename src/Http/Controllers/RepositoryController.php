@@ -497,18 +497,59 @@ class RepositoryController extends Controller
      */
     public function import(Request $request)
     {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv,txt',
+        ]);
+
         $file = $request->file('file')->store('temp');
 
         $spreadsheet = IOFactory::load(storage_path('app/' . $file)); // Carrega o arquivo Excel
 
         $Model = $this->entity($request);
 
-        $items = $Model::createElementsFromSpreadsheet($spreadsheet);
+        $isHeader = true;
+        $header = [];
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $created = 0;
+        $skipped = 0;
+
+        foreach ($worksheet->getRowIterator() as $row)
+        {
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(FALSE);
+
+            $data = [];
+
+            foreach ($cellIterator as $cell)
+            {
+                if ($isHeader) {
+                    $header[] = $cell->getValue();
+                } else {
+                    $data[$header[$cell->getColumn() - 1]] = $cell->getValue();
+                }
+            }
+
+            if (!$isHeader) {
+                $item = $Model::fromImportFile($data);
+                if ($item) {
+                    $created++;
+                } else {
+                    $skipped++;
+                }
+            }
+
+            $isHeader = false;
+        }
 
         // Deleta arquivo temporário
         Storage::delete($file);
 
-        return response()->json(['message' => 'OK'], 200);
+        return response()->json([
+            'message' => 'OK',
+            'created' => $created,
+            'skipped' => $skipped,
+        ], 200);
     }
 
     /**
