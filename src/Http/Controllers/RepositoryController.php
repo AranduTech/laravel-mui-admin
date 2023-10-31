@@ -439,7 +439,7 @@ class RepositoryController extends Controller
 
             // check if is a "BelongsTo" relation
             // and if true, sets `{$key}_id` attribute
-            $reflection = new \ReflectionMethod($item, $key);
+            $reflection = new \ReflectionMethod($item, Str::camel($key));
             if ($reflection->hasReturnType() 
                 && (
                     $reflection->getReturnType()->getName() == BelongsTo::class 
