@@ -448,7 +448,10 @@ class RepositoryController extends Controller
                 )
             ) 
             {
-                $item->{$key . '_id'} = $value['id'];
+                /** @var BelongsTo */
+                $relation = $item->{$key}();
+                $foreingKey = $relation->getForeignKeyName();
+                $item->{$foreingKey} = $value['id'];
             }
         }
     }
