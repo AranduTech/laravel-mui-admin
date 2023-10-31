@@ -428,12 +428,11 @@ class RepositoryController extends Controller
 
         foreach ($data as $key => $value)
         {
-            if (in_array($key, $item->getFillable())) 
-            {
-                continue;
-            }
-
-            if (!method_exists($item, $key))
+            if (
+                in_array($key, $item->getFillable())
+                || !method_exists($item, $key)
+                || !is_array($value)
+            ) 
             {
                 continue;
             }
@@ -450,8 +449,13 @@ class RepositoryController extends Controller
             {
                 /** @var BelongsTo */
                 $relation = $item->{$key}();
-                $foreingKey = $relation->getForeignKeyName();
-                $item->{$foreingKey} = $value['id'];
+                $foreignKey = $relation->getForeignKeyName();
+                $ownerKey = $relation->getOwnerKeyName();
+                if (!isset($value[$ownerKey]))
+                {
+                    continue;
+                }
+                $item->{$foreignKey} = $value[$ownerKey];
             }
         }
     }
