@@ -1,3 +1,4 @@
+import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
 import ChevronLeft from '@mui/icons-material/ChevronLeft';
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import Close from '@mui/icons-material/Close';
@@ -15,6 +16,7 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import Search from '@mui/icons-material/Search';
 
 export default {
+    arrowDropDown: ArrowDropDown,
     chevronLeft: ChevronLeft,
     chevronRight: ChevronRight,
     close: Close,

@@ -3,6 +3,7 @@
 namespace Arandu\LaravelMuiAdmin\Http\Controllers;
 
 use Arandu\LaravelMuiAdmin\Services\AdminService;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Storage;
@@ -422,7 +423,34 @@ class RepositoryController extends Controller
      */
     public function fill(Request $request, $item)
     {
-        $item->fill($request->all());
+        $data = $request->all();
+        $item->fill($data);
+
+        foreach ($data as $key => $value)
+        {
+            if (in_array($key, $item->getFillable())) 
+            {
+                continue;
+            }
+
+            if (!method_exists($item, $key))
+            {
+                continue;
+            }
+
+            // check if is a "BelongsTo" relation
+            // and if true, sets `{$key}_id` attribute
+            $reflection = new \ReflectionMethod($item, $key);
+            if ($reflection->hasReturnType() 
+                && (
+                    $reflection->getReturnType()->getName() == BelongsTo::class 
+                    || is_subclass_of($reflection->getReturnType()->getName(), BelongsTo::class)
+                )
+            ) 
+            {
+                $item->{$key . '_id'} = $value['id'];
+            }
+        }
     }
 
     /**
