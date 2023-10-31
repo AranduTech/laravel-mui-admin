@@ -521,7 +521,7 @@ class RepositoryController extends Controller
         });
 
         return response()->json([
-            'data' => $field['list']($requestSearch),
+            'data' => $field['list']($text),
         ]);
     }
 
