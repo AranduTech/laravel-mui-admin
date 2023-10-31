@@ -428,9 +428,16 @@ class RepositoryController extends Controller
 
         foreach ($data as $key => $value)
         {
+
+            $method = Str::camel($key);
+
+            if (!method_exists($item, $method) && method_exists($item, $key)) {
+                $method = $key;
+            }
+            
             if (
                 in_array($key, $item->getFillable())
-                || !method_exists($item, $key)
+                || !method_exists($item, $method)
                 || !is_array($value)
             ) 
             {
@@ -439,7 +446,7 @@ class RepositoryController extends Controller
 
             // check if is a "BelongsTo" relation
             // and if true, sets `{$key}_id` attribute
-            $reflection = new \ReflectionMethod($item, Str::camel($key));
+            $reflection = new \ReflectionMethod($item, $method);
             if ($reflection->hasReturnType() 
                 && (
                     $reflection->getReturnType()->getName() == BelongsTo::class 
@@ -448,7 +455,7 @@ class RepositoryController extends Controller
             ) 
             {
                 /** @var BelongsTo */
-                $relation = $item->{$key}();
+                $relation = $item->{$method}();
                 $foreignKey = $relation->getForeignKeyName();
                 $ownerKey = $relation->getOwnerKeyName();
                 if (!isset($value[$ownerKey]))
