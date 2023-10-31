@@ -435,8 +435,10 @@ class RepositoryController extends Controller
                 $method = $key;
             }
             
+            $fillable = $item->getFillable();
+
             if (
-                in_array($key, $item->getFillable())
+                in_array($key, $fillable)
                 || !method_exists($item, $method)
                 || !is_array($value)
             ) 
@@ -458,7 +460,7 @@ class RepositoryController extends Controller
                 $relation = $item->{$method}();
                 $foreignKey = $relation->getForeignKeyName();
                 $ownerKey = $relation->getOwnerKeyName();
-                if (!isset($value[$ownerKey]))
+                if (!isset($value[$ownerKey]) || !in_array($foreignKey, $fillable))
                 {
                     continue;
                 }
