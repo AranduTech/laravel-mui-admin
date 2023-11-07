@@ -1,19 +1,19 @@
 # Laravel MUI Admin
 
-Um painel administrativo altamente personalizável para Laravel 8.x, construído com [Material-UI](https://material-ui.com/) e [React](https://reactjs.org/), inspirado no Wordpress.
+Um painel administrativo altamente personalizável para Laravel 8.x, construído com [Material-UI](https://material-ui.com/) e [React](https://reactjs.org/), com um conjunto de ferramentas fullstack para desenvolvimento de aplicações web.
 
 [English docs](README_en.md)
 
 ## Instalação
 
- > **Nota:** Este pacote ainda está em desenvolvimento e não está pronto para uso em produção.
+ > **Nota:** Este pacote ainda está em desenvolvimento. Não recomendamos usá-lo em produção até que a versão 1.0.0 seja lançada
 
- > Se você está instalando este pacote em um projeto existente, certifique-se de ter um backup de seus arquivos.
+ > Este pacote foi pensado para projetos iniciando do zero. Se você já possui um projeto em andamento, pode ser necessário adaptar algumas coisas para que este pacote funcione corretamente.
 
 Pré-requisitos:
 
-    - PHP 7.4
-    - Laravel 8.x
+    - PHP ^7.4|^8.0
+    - Laravel 8.x - Para laravel 9.x, use a branch `laravel-9.x`
     - Node 14.x ou superior
 
 Siga os passos de instalação para [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission/v5/introduction) e instale o pacote [Laravel UI](https://github.com/laravel/ui), pulando a etapa de geração do scaffold.
@@ -72,23 +72,25 @@ No arquivo `app/Providers/RouteServiceProvider.php`, mude a constante `HOME` par
 ```
 
 Verifique se o trait `HasRoles` foi adicionado ao modelo `User.php`.
-Depois adicione o trait `HasAdminSupport`. Exemplo:
+Depois adicione os traits `HasAdminSupport` e `RendersReactView`. Exemplo:
 
 ```php
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Arandu\LaravelMuiAdmin\Traits\HasAdminSupport;
+use Arandu\LaravelMuiAdmin\Traits\RendersReactView;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use HasAdminSupport;
+    use RendersReactView;
     use HasRoles;
 
     // ...
 }
 ```
 
-Configure a autenticação para a API. Recomendamos o [Sanctum](https://laravel.com/docs/8.x/sanctum). Exemplo:
+Configure a autenticação para a API. Recomendamos o [Sanctum](https://laravel.com/docs/8.x/sanctum) (necessária instalação). Exemplo:
 
 ```php
 # config/auth.php
@@ -136,6 +138,14 @@ Alternativamente, você pode executar o seguinte comando para semear apenas as f
 
 ```bash
 php artisan db:seed --class=RolesAndPermissionsSeeder
+```
+
+## Criar as permissões para novos modelos
+
+Durante o desenvolvimento, você pode criar novos modelos que precisam de permissões para serem acessados. Para atualizar a lista de permissões da aplicação, execute o seguinte comando:
+
+```bash
+php artisan admin:permissions
 ```
 
 ## Criar um novo usuário administrador
@@ -250,84 +260,13 @@ public function getApiUrls()
     //        'url' => 'custom/url/to/posts/{id}/force-delete',
     //        'method' => 'delete',
     //    ],
+
+    // use este array para criar rotas api adicionais, se desejar
+    // porém será necessário criar os métodos correspondentes no controller
+    // e registrar a controller na configuração 'admin.cms.controller_overrides'
     ];
 }
 ```
-
-### Os modelos eloquentes do frontend
-
-Depois que um modelo foi adicionado ao painel administrativo, um modelo frontend pode ser recuperado para essa classe. Este modelo frontend será usado para renderizar a página do modelo, criar e editar formulários e para manipular os dados do modelo. Para recuperar o modelo frontend, use o método `ModelRepository.getModelClass`:
-
-```js
-import { modelRepository } from '@arandu/laravel-mui-admin';
-
-const Post = modelRepository.getModelClass('post'); // o parâmetro deve estar em snake case (ex: 'blog_post' para o modelo BlogPost)
-
-// use a classe Post para criar um novo modelo
-const post = new Post({
-    title: 'Título do Post',
-    content: 'Conteúdo do Post',
-});
-
-// você pode definir os atributos fluentemente
-post.title = 'Novo título';
-
-// salve o modelo
-post.save().then(() => {
-    // faça algo após salvar
-});
-```
-
-Para buscar uma lista de modelos, você pode usar o `axios` juntamente com a função `route`:
-
-```js
-import axios from 'axios';
-
-const postsResponse = await axios.get(route('admin.post.list'), {
-    params: {
-        page: 1,
-        per_page: 10,
-        // use este objeto para adicionar filtros
-    },
-});
-
-// isso retornará uma lista de modelos Post
-const posts = postsResponse.data.data.map((post) => new Post(post));
-```
-
-Alternativamente, se você estiver em um componente funcional, pode usar o hook `useFetchList`. Isso mapeará automaticamente a resposta para uma lista de modelos:
-
-```jsx
-import { useFetchList, modelRepository } from '@arandu/laravel-mui-admin';
-
-const Post = modelRepository.getModelClass('post');
-
-const Posts = () => {
-    const { items: posts, request } = useFetchList(Post);
-
-    const { loading, error } = request;
-
-    if (loading) {
-        return <div>Carregando...</div>;
-    }
-
-    if (error) {
-        return <div>Erro: {error.message}</div>;
-    }
-
-    return (
-        <div>
-            {posts.map((post) => (
-                <div key={post.id}>{post.title}</div>
-            ))}
-        </div>
-    );
-};
-```
-
-Este hook reflete e gerencia os parâmetros de pesquisa na URL. Por exemplo, se a URL for `/posts?q=foo`, o hook adicionará automaticamente o parâmetro `q` à solicitação.
-
-Para obter uma documentação completa sobre os modelos de frontend, consulte a documentação do `@arandu/laravel-mui-admin`.
 
 #### Nota sobre relacionamentos
 
@@ -343,30 +282,7 @@ class Post extends Model
 }
 ```
 
-Isso torna possível recuperar o modelo relacionado a partir do modelo de frontend quando o relacionamento está carregado. Por exemplo:
-
-```js
-const response = await axios.get(route('admin.post.item', { id: 1 }));
-// a resposta.data será um modelo Post com o relacionamento user carregado
-// {
-//     id: 1,
-//     title: 'Título do Post',
-//     content: 'Conteúdo do Post',
-//     user: {
-//         id: 1,
-//         name: 'John Doe',
-//     },
-// }
-
-const post = new Post(response.data);
-
-// o relacionamento user está carregado
-const user = post.user;
-
-// você pode trabalhar no modelo relacionado
-user.name = 'Novo nome';
-user.save();
-```
+Isso desbloqueará algumas funcionalidades, como sincronização de relacionamentos, e também permitirá que o frontend carregue os modelos relacionados automaticamente.
 
 ### Personalização
 
@@ -442,10 +358,36 @@ class PostForm extends Form
                 'label' => __('Content'),
                 'type' => 'textarea',
             ],
+
+            // Você pode relacionar modelos com o 
+            // campo tipo 'autocomplete'. Para isso,
+            // o relacionamento deve estar definido
+            // com dicas de tipo, como descrito acima.
+            // Ex: relação tipo `BelongsTo` com uma model 
+            // `User` chamada `author`. 
+            // Também será necessário que
+            // a chave estrangeira (ex: `author_id`)
+            // esteja no array `$fillable` do modelo Post.
+            [
+                'name' => 'author',
+                'label' => __('Author'),
+                'type' => 'autocomplete',
+                // O autocomplete conseguirá encontrar
+                // o modelo relacionado automaticamente
+
+                // É possível também fornecer resultados personalizados
+                // para a lista de resultados
+                // 'list' => function ($search) {
+                //    return User::role('author')->where('name', 'like', "%{$search}%")->get(['id', 'name']);    
+                // }
+
+            ]
         ];
     }
 }
 ```
+
+ > 
 
 ### Adicionando abas personalizadas
 
@@ -479,4 +421,4 @@ public function scopeSearch($query, $search)
 
 ### Aprofundando-se
 
-Para mais informações, aguarde a documentação completa. Por enquanto, você pode verificar o código-fonte do pacote `@arandu/laravel-mui-admin` para ver o que pode ser feito.
+Para mais informações, aguarde a documentação completa. Por enquanto, você pode verificar o código-fonte deste pacote e do pacote (`@arandu/laravel-mui-admin`)[https://github.com/AranduTech/react-laravel-mui-admin] para ver o que pode ser feito.
