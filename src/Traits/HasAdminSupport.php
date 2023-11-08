@@ -212,9 +212,11 @@ trait HasAdminSupport
 
     public function scopeSearch($query, $search)
     {
-        foreach ($this->getFillable() as $fillable) {
-            $query->orWhere($fillable, 'like', '%' . $search . '%');
-        }
+        $query->where(function ($query) use ($search) {
+            foreach ($this->getFillable() as $fillable) {
+                $query->orWhere($fillable, 'like', '%' . implode('%', explode(' ', $search)) . '%');
+            }
+        });
 
         return $query;
     }
