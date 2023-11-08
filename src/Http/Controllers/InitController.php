@@ -2,6 +2,7 @@
 
 namespace Arandu\LaravelMuiAdmin\Http\Controllers;
 
+use Arandu\LaravelMuiAdmin\Commands\ManifestCommand;
 use Arandu\LaravelMuiAdmin\Services\AdminService;
 use Arandu\LaravelMuiAdmin\Services\JsService;
 use Illuminate\Routing\Controller as BaseController;
@@ -29,6 +30,10 @@ class InitController extends BaseController
                     : null,
             ]
             : [];
+
+        if (ManifestCommand::hasMacro('modifyManifest')) {
+            $manifest = ManifestCommand::modifyManifest($manifest);
+        }
 
         return response()->json(array_merge(
             $manifest,
