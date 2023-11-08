@@ -43,6 +43,12 @@ class ManifestCommand extends Command
      */
     public function handle()
     {
+        if (config('admin.manifest', 'api') !== 'bundle') {
+            $this->error('The manifest command is only available in "bundle" mode.');
+
+            return 1;
+        }
+
         $manifest = [
             'models' => $this->adminService->getModelSchema(),
             'routes' => $this->adminService->getRoutes(),
