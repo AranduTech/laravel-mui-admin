@@ -18,7 +18,7 @@ class Mui extends Preset
         // static::ensureComponentDirectoryExists();
         static::updatePackages(false);
         static::updatePackages();
-        static::updateWebpackConfiguration();
+        static::updateViteConfiguration();
         static::updateComponent();
         static::removeNodeModules();
     }
@@ -63,9 +63,9 @@ class Mui extends Preset
      *
      * @return void
      */
-    protected static function updateWebpackConfiguration()
+    protected static function updateViteConfiguration()
     {
-        copy(__DIR__.'/../../stubs/webpack.mix.js', base_path('webpack.mix.js'));
+        copy(__DIR__.'/../../stubs/vite.config.js', base_path('vite.config.js'));
     }
 
     /**
