@@ -6,31 +6,19 @@ use Arandu\LaravelMuiAdmin\Http\Controllers\RendererController;
 use Arandu\LaravelMuiAdmin\Http\Controllers\RepositoryController;
 
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Facades\Route;
+
 use Illuminate\Support\Str;
 
 trait HasAdminSupport
 {
 
     use DeactivatesAppends;
-
-    public function getSyncs()
-    {
-        if (!isset($this->syncs)) {
-            return [];
-        }
-
-        return $this->syncs;
-    }
-
-    public function getFormFillable()
-    {
-        if ($form = $this->getFormInstance()) {
-            return array_merge($this->fillable, $form->getExtra());
-        }
-
-        return $this->fillable;
-    }
+    use Formable;
+    use HasApiRoutes;
+    use HasCmsQueryScopes;
+    use HasWebRoutes;
+    use SyncsBelongsToManyRelations;
+    use Tableable;
 
     public function getSchema()
     {
@@ -59,47 +47,6 @@ trait HasAdminSupport
         // strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', class_basename($this)));
     }
 
-    public function getFormClass()
-    {
-        return 'App\\Admin\\Forms\\' . class_basename($this) . 'Form';
-    }
-
-    public function getTableClass()
-    {
-        return 'App\\Admin\\Tables\\' . class_basename($this) . 'Table';
-    }
-
-    /**
-     * Obtém uma instância do formulário da entidade.
-     *
-     * @return null|\App\Contracts\Form
-     */
-    public function getFormInstance()
-    {
-        $form = $this->getFormClass();
-
-        if (!class_exists($form)) {
-            return null;
-        }
-
-        return new $form();
-    }
-
-    /**
-     * Obtém uma instância da tabela da entidade.
-     *
-     * @return null|\Arandu\LaravelMuiAdmin\Contracts\Table
-     */
-    public function getTableInstance()
-    {
-        $table = $this->getTableClass();
-
-        if (!class_exists($table)) {
-            return null;
-        }
-
-        return new $table();
-    }
 
     public function hasSoftDelete()
     {
@@ -123,242 +70,6 @@ trait HasAdminSupport
             \Arandu\LaravelMuiAdmin\Traits\Exportable::class,
             class_uses_recursive(static::class)
         );
-    }
-
-    public function getFieldsDefinition(): array
-    {
-        $definitions = [];
-        // dd('App\\Frontend\\Forms\\' . class_basename($this) . 'Form');
-        if ($formInstance = $this->getFormInstance()) {
-            // iterate through instance methods
-            foreach (get_class_methods($formInstance) as $method) {
-                if (in_array(
-                    $method,
-                    [
-                        'getExtra',
-                        'getRequestFormType',
-                        'getRequestAction',
-                        'validate',
-                        'getInitialFormValues',
-                    ]
-                )) {
-                    continue;
-                }
-                $definitions[$method] = $formInstance->{$method}();
-            }
-
-            return $definitions;
-        }
-
-        foreach ($this->getFormFillable() as $fillable) {
-            $definitions[] = [
-                'name' => $fillable,
-            ];
-        }
-
-        return [
-            'default' => $definitions,
-        ];
-    }
-
-    public function getTablesDefinition(): array
-    {
-        $definitions = [];
-
-        if ($tableInstance = $this->getTableInstance()) {
-            // iterate through instance methods
-            foreach (get_class_methods($tableInstance) as $method) {
-                $reflection = new \ReflectionMethod($tableInstance, $method);
-                if ($reflection->getDeclaringClass()->getName() !== $this->getTableClass()) {
-                    continue;
-                }
-                $definitions[$method] = [
-                    'columns' => $tableInstance->{$method}()
-                ];
-                if (
-                    $tableInstance->getFilterFormClass() 
-                    && method_exists($tableInstance->filter(), $method)
-                ) {
-                    $definitions[$method]['filter'] = $tableInstance->filter()->{$method}();
-                }
-            }
-
-            return $definitions;
-        }
-
-        foreach ($this->getFillable() as $fillable) {
-            $definitions[] = [
-                'key' => $fillable,
-                'label' => __($fillable),
-            ];
-        }
-
-        return [
-            'default' => [
-                'columns' => $definitions,
-            ],
-        ];
-    }
-
-    public function scopeBeginCmsQuery($query, $request)
-    {
-        return $query;
-    }
-
-    public function scopeWhereCurrentUserCan($query, $action)
-    {
-        return $query;
-    }
-
-    public function scopeSearch($query, $search)
-    {
-        $query->where(function ($query) use ($search) {
-            foreach ($this->getFillable() as $fillable) {
-                $query->orWhere($fillable, 'like', '%' . implode('%', explode(' ', $search)) . '%');
-            }
-        });
-
-        return $query;
-    }
-
-    public function scopeWhereBelongsToTab($query, $tab)
-    {
-        if ('trashed' == $tab) {
-            $query = $query->onlyTrashed();
-        }
-
-        return $query;
-    }
-
-    public function scopeWhereMatchesFilter($query, $filters)
-    {
-        return $query;
-    }
-
-    public function scopeApplyOrderBy($query, $column, $direction)
-    {
-        return $query->orderBy($column, $direction);
-    }
-    
-    public function getWebUrls()
-    {
-        return [
-            'index' => Str::plural($this->getSchemaName()),
-            // 'new' => $this->getSchemaName() . '/create',
-            // 'edit' => $this->getSchemaName() . '/update',
-            // 'item' => $this->getSchemaName() . '/{id}',
-        ];
-    }
-
-    // 'user.list'
-    public function getApiUrls()
-    {
-        $apiUrls = [
-            'list' => Str::plural($this->getSchemaName()),
-            'item' => $this->getSchemaName() . '/{id}',
-            'create' => [
-                'url' => Str::plural($this->getSchemaName()),
-                'method' => 'post',
-            ],
-            'update' => [
-                'url' => $this->getSchemaName() . '/{id}',
-                'method' => 'post',
-            ],
-            'delete' => [
-                'url' => $this->getSchemaName() . '/{id}',
-                'method' => 'delete',
-            ],
-            'massDelete' => [
-                'url' => Str::plural($this->getSchemaName()) . '/delete',
-                'method' => 'post',
-            ]
-        ];
-
-        if ($this->hasSoftDelete()) {
-            $apiUrls['restore'] = [
-                'url' => $this->getSchemaName() . '/{id}/restore',
-                'method' => 'post',
-            ];
-            $apiUrls['forceDelete'] = [
-                'url' => $this->getSchemaName() . '/{id}/force',
-                'method' => 'delete',
-            ];
-            $apiUrls['massRestore'] = [
-                'url' => Str::plural($this->getSchemaName()) . '/restore',
-                'method' => 'post',
-            ];
-            $apiUrls['massForceDelete'] = [
-                'url' => Str::plural($this->getSchemaName()) . '/forceDelete',
-                'method' => 'post',
-            ];
-        }
-
-        if ($this->hasImportable()) {
-            $apiUrls['import'] = [
-                'url' => Str::plural($this->getSchemaName()) . '/import',
-                'method' => 'post',
-            ];
-        }
-
-        if ($this->hasExportable()) {
-            $apiUrls['export'] = Str::plural($this->getSchemaName()) . '/export';
-        }
-
-        return $apiUrls;
-    }
-
-    public function mapApiActionToAbility($action)
-    {
-        $map = [
-            'index' => 'read',
-            'list' => 'read',
-            'store' => 'create',
-            'get' => 'read',
-            'update' => 'update',
-            'delete' => 'delete',
-            'restore' => 'delete',
-            'forceDelete' => 'delete',
-            'massDelete' => 'delete',
-        ];
-
-        if (!isset($map[$action])) {
-            return $action;
-        }
-
-        return $map[$action];
-    }
-
-    public function web()
-    {
-        $urls = $this->getWebUrls();
-
-        foreach ($urls as $page => $url) {
-            Route::get($url, [RendererController::class, 'render'])
-                ->name('admin.' . $this->getSchemaName() . '.' . $page);
-        }
-    }
-
-    public function api()
-    {
-        $urls = $this->getApiUrls();
-
-        foreach ($urls as $action => $url) {
-            $method = 'get';
-
-            if (is_array($url)) {
-                $method = $url['method'];
-                $url = $url['url'];
-            }
-
-            $overrides = config('admin.cms.controller_overrides', []);
-
-            $controller = isset($overrides[static::class])
-                ? $overrides[static::class]
-                : RepositoryController::class;
-
-            Route::$method($url, [$controller, $action])
-                ->name('admin.' . $this->getSchemaName() . '.' . $action);
-        }
     }
 
     /**

@@ -2,24 +2,12 @@
 
 namespace Arandu\LaravelMuiAdmin\Contracts;
 
+use Arandu\LaravelMuiAdmin\Traits\Formable;
+
 abstract class Table 
 {
-    protected $filterForm;
-
-    private $filterFormInstance;
+    use Formable;
 
     abstract public function default();
 
-    public function getFilterFormClass()
-    {
-        return $this->filterForm;
-    }
-
-    public function filter()
-    {
-        if (!isset($this->filterFormInstance)) {
-            $this->filterFormInstance = new $this->filterForm();
-        }
-        return $this->filterFormInstance;
-    }
 }
