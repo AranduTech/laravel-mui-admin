@@ -2,9 +2,6 @@
 
 namespace Arandu\LaravelMuiAdmin\Traits;
 
-use Arandu\LaravelMuiAdmin\Http\Controllers\RendererController;
-use Arandu\LaravelMuiAdmin\Http\Controllers\RepositoryController;
-
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 use Illuminate\Support\Str;

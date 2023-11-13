@@ -2,6 +2,7 @@
 
 namespace Arandu\LaravelMuiAdmin\Traits;
 
+use Arandu\LaravelMuiAdmin\Http\Controllers\RepositoryController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
