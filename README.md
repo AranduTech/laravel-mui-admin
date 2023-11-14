@@ -1,108 +1,18 @@
 # Laravel MUI Admin
 
-Um painel administrativo altamente personalizável para Laravel 8.x, construído com [Material-UI](https://material-ui.com/) e [React](https://reactjs.org/), com um conjunto de ferramentas fullstack para desenvolvimento de aplicações web.
+Um CMS orientado a modelos, altamente personalizável para Laravel 8.x, com um conjunto de ferramentas fullstack para desenvolvimento ágil de aplicações web.
+
+Construído com [Material-UI](https://mui.com/material-ui) e [React](https://react.dev/)
 
 [English docs](README_en.md)
 
-## Instalação
+ > **Nota:** Este pacote ainda está em desenvolvimento. Podem ocorrer mudanças significativas na API até a versão 1.0.0.
 
- > **Nota:** Este pacote ainda está em desenvolvimento. Não recomendamos usá-lo em produção até que a versão 1.0.0 seja lançada
+## Template
 
- > Este pacote foi pensado para projetos iniciando do zero. Se você já possui um projeto em andamento, pode ser necessário adaptar algumas coisas para que este pacote funcione corretamente.
+Disponibilizamos um template para iniciar um projeto com este pacote. [Clique aqui]({{LINK AQUI}})
 
-Pré-requisitos:
-
-    - PHP ^7.4|^8.0
-    - Laravel 8.x - Para laravel 9.x, use a branch `laravel-9.x`
-    - Node 14.x ou superior
-
-Siga os passos de instalação para [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission/v5/introduction) e instale o pacote [Laravel UI](https://github.com/laravel/ui), pulando a etapa de geração do scaffold.
-
-```bash
-composer require spatie/laravel-permission
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-php artisan migrate
-composer require laravel/ui
-```
- > **Nota:** Existem etapas não descritas aqui. Por favor, siga a documentação de cada pacote.
-
-Em seguida, instale este pacote:
-
-```bash
-composer require arandu/laravel-mui-admin
-```
-
-Publique a configuração e os arquivos:
-
-```bash
-php artisan vendor:publish --provider="Arandu\\LaravelMuiAdmin\\AdminServiceProvider"
-php artisan ui mui --auth
-```
-
-Instale as dependências do Node e compile o frontend:
-
-```bash
-npm install && npm run dev
-```
-
-## Configuração
-
-Adicione as seguintes linhas de código ao arquivo de rota `web.php`:
-
-```php
-use Arandu\LaravelMuiAdmin\Facades\Admin;
-use Illuminate\Support\Facades\Auth;
-
-Auth::routes();
-Admin::web();
-```
-
-Adicione as seguintes linhas de código ao arquivo de rota `api.php`:
-
-```php
-use Arandu\LaravelMuiAdmin\Facades\Admin;
-
-Admin::api();
-```
-
-No arquivo `app/Providers/RouteServiceProvider.php`, mude a constante `HOME` para `'/'`. Exemplo:
-
-```php
-    public const HOME = '/';
-```
-
-Verifique se o trait `HasRoles` foi adicionado ao modelo `User.php`.
-Depois adicione os traits `HasAdminSupport` e `RendersReactView`. Exemplo:
-
-```php
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Arandu\LaravelMuiAdmin\Traits\HasAdminSupport;
-use Arandu\LaravelMuiAdmin\Traits\RendersReactView;
-use Spatie\Permission\Traits\HasRoles;
-
-class User extends Authenticatable
-{
-    use HasAdminSupport;
-    use RendersReactView;
-    use HasRoles;
-
-    // ...
-}
-```
-
-Configure a autenticação para a API. Recomendamos o [Sanctum](https://laravel.com/docs/8.x/sanctum) (necessária instalação). Exemplo:
-
-```php
-# config/auth.php
-    // ...
-    'guards' => [
-        // ...
-        'api' => [
-            'driver' => 'sanctum',
-            'provider' => 'users',
-        ],
-    ],
-```
+Caso deseje realizar a instalação manual, veja a [documentação de instalação](./docs/instalacao.md)
 
 # Uso Básico
 
@@ -158,17 +68,11 @@ php artisan admin:credentials
 
 Este comando perguntará por um nome de usuário, e-mail e senha, e criará um novo usuário com o papel de `admin`.
 
-## Renderizando o painel administrativo
-
-Se você seguiu as etapas de instalação e todos os ativos foram construídos, você deve ser capaz de acessar o administrador após o login. Use as credenciais que você criou na etapa anterior.
-
-No entanto, se você precisar renderizar manualmente o painel administrativo, consulte a documentação do pacote npm `@arandu/laravel-mui-admin`.
-
 ## Preparando um modelo para o painel administrativo
 
 Para preparar um modelo para o painel administrativo, você precisa adicionar o trait `HasAdminSupport` a ele. Esse trait adicionará os métodos necessários ao modelo para fazê-lo funcionar com o painel administrativo.
 
-Além disso, você deve ter a propriedade `$fillable` configurada no modelo, para que o painel administrativo saiba quais campos estão disponíveis para o modelo.
+Além disso, você deve ter a propriedade `$fillable` configurada no modelo. Esta propriedade é usada para informar ao frontend quais campos podem ser preenchidos, e também é usada para renderizar as colunas da página do modelo. Você pode personalizar os campos e as colunas, conforme veremos adiante.
 
 ### Adicionando o trait `HasAdminSupport`
 
@@ -286,8 +190,6 @@ Isso desbloqueará algumas funcionalidades, como sincronização de relacionamen
 
 ### Personalização
 
-O componente `RepositoryIndex` do pacote `@arandu/laravel-mui-admin` é responsável por renderizar a lista de modelos, lidar com paginação, filtros, ações, criar, editar e deletar modelos. Existem várias formas de personalizar a aparência deste componente. Esta documentação cobrirá o que pode ser feito no nível do backend para personalizar colunas, formulários, abas e a pesquisa. Para personalização no frontend, consulte a documentação do componente `RepositoryIndex`.
-
 #### Personalizar as colunas da página do modelo
 
 Por padrão, o componente `RepositoryIndex` renderizará uma tabela com colunas correspondentes à propriedade `$fillable` do modelo. Se você quiser personalizar as colunas, deve criar uma classe em seu projeto em `app/Admin/Tables/{$model}Table.php`. Por exemplo, se o modelo é chamado `Post`, a classe deve ser chamada `PostTable`.
@@ -299,7 +201,9 @@ A classe criada deve ter pelo menos um método chamado `default`, que será usad
 
 namespace App\Admin\Tables;
 
-class PostTable 
+use Arandu\LaravelMuiAdmin\Contracts\Table;
+
+class PostTable extends Table
 {
     public function default()
     {
@@ -326,6 +230,8 @@ class PostTable
 }
 ```
 
+ > Caso deseje criar uma classe em outro local, ou com outro nome, será necessário adicionar a propriedade `$tableClass` no modelo. Exemplo: `protected $tableClass = 'App\\Tables\\PostTableWithCustomName';`
+
 ### Adicionando campos personalizados
 
 Por padrão, o componente `RepositoryIndex` renderizará um formulário com campos correspondentes à propriedade `$fillable` do modelo, e todos os campos serão do tipo `text`. Se você quiser personalizar os campos, deve criar uma classe em seu projeto em `app/Admin/Forms/{$model}Form.php`. Por exemplo, se o modelo é chamado `Post`, a classe deve ser chamada `PostForm`. Esta classe deve estender a classe `Arandu\LaravelMuiAdmin\Contracts\Form` e deve ter pelo menos um método chamado `default`, que será usado quando nenhum outro método for especificado.
@@ -348,15 +254,15 @@ class PostForm extends Form
                 'name' => 'title',
                 // 'label' é o texto que será exibido no campo
                 'label' => __('Title'),
-                // 'type' é o tipo do campo
+                // 'type' é o tipo do campo, por padrão é 'text'
                 'type' => 'text',
-                // parâmetros adicionais podem ser adicionados
+                // parâmetros adicionais serão passados para o componente
                 'required' => true,
             ],
             [
                 'name' => 'content',
                 'label' => __('Content'),
-                'type' => 'textarea',
+                'multiline' => true,
             ],
 
             // Você pode relacionar modelos com o 
@@ -372,13 +278,13 @@ class PostForm extends Form
                 'name' => 'author',
                 'label' => __('Author'),
                 'type' => 'autocomplete',
-                // O autocomplete conseguirá encontrar
-                // o modelo relacionado automaticamente
+                // O autocomplete irá listar itens
+                // da model relacionada, por padrão.
 
                 // É possível também fornecer resultados personalizados
-                // para a lista de resultados
+                // para a listagem do autocomplete, ex:
                 // 'list' => function ($search) {
-                //    return User::role('author')->where('name', 'like', "%{$search}%")->get(['id', 'name']);    
+                //    return User::role('author')->search($search)->get(['id', 'name']);    
                 // }
 
             ]
@@ -387,11 +293,11 @@ class PostForm extends Form
 }
 ```
 
- > 
+ > Caso deseje criar uma classe em outro local, ou com outro nome, será necessário adicionar a propriedade `$formClass` no modelo. Exemplo: `protected $formClass = 'App\\Forms\\PostFormWithCustomName';`
 
 ### Adicionando abas personalizadas
 
-As abas que aparecem na página devem ser personalizadas no frontend através do registro de um filtro usando o método `addFilter` do pacote `@arandu/laravel-mui-admin`. Verifique a documentação do componente `RepositoryIndex` para mais informações.
+As abas que aparecem na página devem ser personalizadas no frontend através do [registro de um filtro](./docs/__old/api/macros/filters.md#repository_index_tabs) usando o método `addFilter` do pacote `@arandu/laravel-mui-admin`.
 
 Para lidar com as consultas das abas, sobrescreva o método `scopeWhereBelongsToTab` no modelo. Por exemplo, se você quiser adicionar uma aba para mostrar apenas as postagens que estão publicadas, você deve adicionar o seguinte método ao modelo `Post`:
 
@@ -399,10 +305,8 @@ Para lidar com as consultas das abas, sobrescreva o método `scopeWhereBelongsTo
 public function scopeWhereBelongsToTab($query, $tab)
 {
     if ($tab === 'published') {
-        return $query->where('published', true);
+        $query->where('published', true);
     }
-
-    return $query;
 }
 ```
 
@@ -410,12 +314,17 @@ Por padrão o componente `RepositoryIndex` irá renderizar uma aba com o nome `a
 
 ### Adicionando busca
 
-Para lidar com as consultas de busca, substitua o método `scopeSearch` no modelo. Por exemplo, se você quiser adicionar uma busca para encontrar posts pelo título, deve adicionar o seguinte método ao modelo `Post`:
+A implementação padrão da pesquisa realiza uma consulta utilizando `"LIKE"` em todos os campos da propriedade `$fillable`. Se você quiser personalizar a pesquisa, deve sobrescrever o método `scopeSearch` no modelo. Por exemplo, se você quiser pesquisar apenas pelo título ou pelo nome do autor, você deve adicionar o seguinte método ao modelo `Post`:
 
 ```php
 public function scopeSearch($query, $search)
 {
-    return $query->where('title', 'like', "%{$search}%");
+    $query->where(function ($query) use ($search) {
+        $query->where('title', 'like', "%{$search}%");
+        $query->orWhereHas('author', function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            });
+    });
 }
 ```
 
