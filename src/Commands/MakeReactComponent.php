@@ -15,9 +15,9 @@ class MakeReactComponent extends Command
      */
     protected $signature = 'make:react-component
                             {name : O nome do component}
-                            {--connected : Ao utilizar esta flag, o componente virá conectado ao redux}
                             {--prop-types : Ao utilizar esta flag, será criada a estrutura para validação de tipo das props}
                             {--page : Ao utilizar esta flag, criará o componente como Página}';
+                            // {--connected : Ao utilizar esta flag, o componente virá conectado ao redux}
 
     /**
      * The console command description.
@@ -53,7 +53,7 @@ class MakeReactComponent extends Command
 
         $componentName = $nameParts->last();
 
-        $connected = $this->option('connected');
+        $connected = false; // $this->option('connected');
         $propTypes = $this->option('prop-types');
         $page = $this->option('page');
 

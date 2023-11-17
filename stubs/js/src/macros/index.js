@@ -1,9 +1,8 @@
 import { runCoreMacros } from '@arandu/laravel-mui-admin';
-import tables from './tables';
 
 // register system core macros
 runCoreMacros();
 
-// register custom macros
-tables();
+// import and run user macros below this line.
+
 

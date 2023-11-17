@@ -1,14 +1,15 @@
 /* eslint-disable no-undef */
+import React from 'react';
+
+import createRouter from './routes';
 import renderer from './renderer';
 
-import { app } from '@arandu/laravel-mui-admin';
+import App from './components/App';
 
-export default (rendererName) => {
+export default async (rendererName) => {
 
-    if (app.getDefinition('data.user')) {
-        require('./models');
-        require('./macros');
-    }
+    await import('./macros');
+
 
     if (!Object.keys(renderer).includes(rendererName)) {
         throw new Error(`Renderer ${rendererName} is not defined.`);
@@ -22,7 +23,13 @@ export default (rendererName) => {
     const rootElement = document.getElementById('root');
 
     if (rootElement) {
-        // Render the app.
-        renderer[rendererName](rootElement);
+        // Create the router.
+        createRouter(rendererName).then((router) => {
+            // Render the app.
+            ReactDOM.render(
+                <App router={router} />,
+                rootElement,
+            );
+        });
     }
 };
