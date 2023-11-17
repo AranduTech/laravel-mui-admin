@@ -8,7 +8,7 @@ import App from './components/App';
 
 export default async (rendererName) => {
 
-    await import('./macros');
+    await import(/* webpackChunkName: "macros" */ './macros');
 
 
     if (!Object.keys(renderer).includes(rendererName)) {
