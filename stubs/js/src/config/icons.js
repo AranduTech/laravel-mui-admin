@@ -15,6 +15,19 @@ import Security from '@mui/icons-material/Security';
 import MoreVert from '@mui/icons-material/MoreVert';
 import Search from '@mui/icons-material/Search';
 
+/**
+ * The icons used by the application.
+ * 
+ * To use an icon, import the `Icon` component from `@arandu/laravel-mui-admin`
+ * and pass the icon name as the `name` prop. Feel free to expand this list,
+ * however, be aware that the icons on this list are probably being used by
+ * other components.
+ * 
+ * @example
+ * import { Icon } from '@arandu/laravel-mui-admin';
+ * 
+ * <Icon name="homeOutlined" />
+ */
 export default {
     arrowDropDown: ArrowDropDown,
     chevronLeft: ChevronLeft,
