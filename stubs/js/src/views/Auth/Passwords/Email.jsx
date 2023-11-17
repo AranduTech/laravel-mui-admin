@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 import CsrfToken from '@arandu/laravel-mui-admin/lib/components/CsrfToken';
 import {
-    blade, route, error, useClearErrorsOnExit,
+    config, route, error, useClearErrorsOnExit,
 } from '@arandu/laravel-mui-admin';
 
 import useWindowHeight from '../../../hooks/useWindowHeight';
@@ -59,9 +59,9 @@ const Email = () => {
                             >
                                 {t('auth.password.send')}
                             </Typography>
-                            {blade('status') && (
+                            {config('boot.data.status') && (
                                 <Alert severity="success">
-                                    {blade('status')}
+                                    {config('boot.data.status')}
                                 </Alert>
                             )}
                             <TextField
@@ -70,7 +70,7 @@ const Email = () => {
                                 name="email"
                                 type="email"
                                 autoComplete="email"
-                                defaultValue={blade('old.email') || ''}
+                                defaultValue={config('boot.data.old.email') || ''}
                                 required
                                 error={!!error('email')}
                             />

@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import CsrfToken from '@arandu/laravel-mui-admin/lib/components/CsrfToken';
 import { useTranslation } from 'react-i18next';
 
-import { blade, route } from '@arandu/laravel-mui-admin';
+import { config, route } from '@arandu/laravel-mui-admin';
 
 const Verify = () => {
     const { t } = useTranslation();
@@ -44,7 +44,7 @@ const Verify = () => {
                         >
                             {t('verification.check')}
                         </Typography>
-                        {blade('resent') && (
+                        {config('boot.data.resent') && (
                             <Alert severity="success">
                                 {t('verification.resent')}
                             </Alert>

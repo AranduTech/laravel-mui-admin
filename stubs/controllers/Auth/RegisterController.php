@@ -51,11 +51,11 @@ class RegisterController extends Controller
     {
         $js->catches(['name', 'email', 'password']);
 
-        if (old('name')) {
-            $js->set('old.name', old('name'));
-        }
-        if (old('email')) {
-            $js->set('old.email', old('email'));
+        if (old('name') || old('email')) {
+            $js->set('old', [
+                'name' => old('name'),
+                'email' => old('email'),
+            ]);
         }
 
         return view('guest')->with(['js' => $js]);

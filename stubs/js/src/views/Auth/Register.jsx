@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import CsrfToken from '@arandu/laravel-mui-admin/lib/components/CsrfToken';
 
 import {
-    blade, route, error, useClearErrorsOnExit,
+    config, route, error, useClearErrorsOnExit,
 } from '@arandu/laravel-mui-admin';
 
 import useWindowHeight from '../../hooks/useWindowHeight';
@@ -65,7 +65,7 @@ export const Login = () => {
                                 name="name"
                                 type="name"
                                 autoComplete="name"
-                                defaultValue={blade('old.name') || ''}
+                                defaultValue={config('boot.data.old.name') || ''}
                                 error={!!error('name')}
                                 required
                             />
@@ -82,7 +82,7 @@ export const Login = () => {
                                 name="email"
                                 type="email"
                                 autoComplete="email"
-                                defaultValue={blade('old.email') || ''}
+                                defaultValue={config('boot.data.old.email') || ''}
                                 error={!!error('email')}
                                 required
                             />
