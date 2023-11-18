@@ -6,7 +6,7 @@ import { config, ToastProvider, DialogProvider } from '@arandu/laravel-mui-admin
 import { RouterProvider } from 'react-router-dom';
 
 
-const App = ({ router }) => {
+const App = ({ router, theme }) => {
 
     // This is the main component of your application.
     // Here you can add providers from packages like Redux, React Query, etc.
@@ -18,7 +18,7 @@ const App = ({ router }) => {
 
     return (
         <React.StrictMode>
-            <ThemeProvider theme={createTheme(config('theme'))}>
+            <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <RouterProvider router={router} />
                 <ToastProvider />

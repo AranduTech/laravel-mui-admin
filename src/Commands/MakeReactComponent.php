@@ -59,13 +59,13 @@ class MakeReactComponent extends Command
 
         $folder = $page ? 'views' : 'components';
 
-        if (file_exists(base_path() . "/resources/js/src/{$folder}/{$name}.jsx")) {
+        if (file_exists(base_path() . "/resources/js/{$folder}/{$name}.jsx")) {
             $this->error('Já existe um componente com este nome.');
 
             return 1;
         }
 
-        $filename = base_path() . "/resources/js/src/{$folder}/{$name}.jsx";
+        $filename = base_path() . "/resources/js/{$folder}/{$name}.jsx";
 
         $imports = '';
         $afterComponent = '';

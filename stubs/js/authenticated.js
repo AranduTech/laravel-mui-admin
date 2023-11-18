@@ -1,11 +1,23 @@
-// import { bootstrapApp, app } from '@arandu/laravel-mui-admin';
+// import React from 'react';
+// import ReactDOM from 'react-dom';
 
-// import createApp from './src/app';
-// import config from './src/config';
+// import { app } from '@arandu/laravel-mui-admin';
 
-// bootstrapApp(config);
+// import App from './components/App';
+// import config from './config';
+// import routes from './routes/authenticated';
 
-// app.init().then(() => {
-//     createApp('authenticated');
-// });
+// app.withRoutes(routes)
+//     .withConfig(config)
+//     .withMacros(() => import(/* webpackChunkName: "macros" */ './macros'))
+//     .init()
+//     .then(({ router, theme }) => {
+//         ReactDOM.render(
+//             <App
+//                 router={router}
+//                 theme={theme}
+//             />,
+//             document.getElementById('root'),
+//         );
+//     });
 

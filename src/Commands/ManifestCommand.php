@@ -58,7 +58,7 @@ class ManifestCommand extends Command
             $manifest = static::modifyManifest($manifest);
         }
 
-        $filepath = $this->option('path') ?? resource_path('js/src/config/boot.json');
+        $filepath = $this->option('path') ?? resource_path('js/config/boot.json');
 
         file_put_contents($filepath, json_encode($manifest, JSON_PRETTY_PRINT));
 
