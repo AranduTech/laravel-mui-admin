@@ -529,8 +529,16 @@ class RepositoryController extends Controller
             return $field['name'] == $fieldName;
         });
 
+        $reflection = new \ReflectionFunction($field['list']);
+
+        $args = [$text];
+
+        if ($reflection->getNumberOfParameters() == 2 && $request->has('filters')) {
+            $args[] = json_decode($request->filters, true);
+        }
+
         return response()->json([
-            'data' => $field['list']($text),
+            'data' => $field['list'](...$args),
         ]);
     }
 
