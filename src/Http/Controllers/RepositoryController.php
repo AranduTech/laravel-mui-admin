@@ -441,6 +441,7 @@ class RepositoryController extends Controller
                 in_array($key, $fillable)
                 || !method_exists($item, $method)
                 || !is_array($value)
+                || !is_null($value)
             ) 
             {
                 continue;
@@ -459,7 +460,14 @@ class RepositoryController extends Controller
                 /** @var BelongsTo */
                 $relation = $item->{$method}();
                 $foreignKey = $relation->getForeignKeyName();
+
+                if (is_null($value)) {
+                    $item->{$foreignKey} = null;
+                    continue;
+                }
+
                 $ownerKey = $relation->getOwnerKeyName();
+
                 if (!isset($value[$ownerKey]) || !in_array($foreignKey, $fillable))
                 {
                     continue;
