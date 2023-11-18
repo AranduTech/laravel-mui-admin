@@ -77,7 +77,7 @@ import { addFilter, addAction } from '@arandu/laravel-mui-admin';
 // ...
 ```
 
-5. Crie o componente `App` em `resources/js/components/App.js` com o seguinte conteúdo:
+5. Crie o componente `App` em `resources/js/components/App.jsx` com o seguinte conteúdo:
 
 ```js
 import React from 'react';
