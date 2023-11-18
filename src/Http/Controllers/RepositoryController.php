@@ -218,6 +218,10 @@ class RepositoryController extends Controller
 
         $this->afterModelSaved($request, $item);
 
+        $relations = $item->getRelations();
+        
+        $item = $item->fresh(array_keys($relations));
+
         return response()->json($item, 200);
     }
 
