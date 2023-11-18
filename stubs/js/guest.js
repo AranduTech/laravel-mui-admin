@@ -7,17 +7,16 @@ import App from './components/App';
 import config from './config';
 import routes from './routes/guest';
 
-app.withRoutes(routes)
-    .withConfig(config)
-    // .withMacros(() => import(/* webpackChunkName: "macros" */ './macros'))
-    .init()
-    .then(({ router, theme }) => {
-        ReactDOM.render(
-            <App
-                router={router}
-                theme={theme}
-            />,
-            document.getElementById('root'),
-        );
-    });
+window.addEventListener('load', async () => {
+    const { router, theme } = await app.withRoutes(routes)
+        .withConfig(config)
+        .init();
 
+    ReactDOM.render(
+        <App
+            router={router}
+            theme={theme}
+        />,
+        document.getElementById('root'),
+    );
+});

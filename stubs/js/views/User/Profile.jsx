@@ -5,9 +5,7 @@ import Stack from '@mui/material/Stack';
 
 import { useTranslation } from 'react-i18next';
 
-import ModelForm from '@arandu/laravel-mui-admin/lib/components/Form/ModelForm';
-
-import { toast, auth } from '@arandu/laravel-mui-admin';
+import { toast, auth, ModelForm } from '@arandu/laravel-mui-admin';
 
 // import { User } from '../../models';
 

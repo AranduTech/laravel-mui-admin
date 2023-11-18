@@ -7,10 +7,7 @@ import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import SvgIcon from '@mui/material/SvgIcon';
 
-import Icon from '@arandu/laravel-mui-admin/lib/components/Icon';
-import Link from '@arandu/laravel-mui-admin/lib/components/Link';
-
-import { route } from '@arandu/laravel-mui-admin';
+import { Icon, Link } from '@arandu/laravel-mui-admin';
 import { useTranslation } from 'react-i18next';
 
 const Welcome = () => {

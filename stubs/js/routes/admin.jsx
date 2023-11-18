@@ -1,7 +1,6 @@
 import React from 'react';
 
-import Suspense from '@arandu/laravel-mui-admin/lib/components/Suspense';
-import { modelRepository, route } from '@arandu/laravel-mui-admin';
+import { modelRepository, route, Suspense } from '@arandu/laravel-mui-admin';
 
 import Error from '../views/Error';
 
@@ -44,7 +43,7 @@ export default () => [
             ...modelRepository.createWebRoutes({
                 '*': () => (
                     <Suspense>
-                        {React.lazy(() => import('@arandu/laravel-mui-admin/lib/components/RepositoryIndex'))}
+                        {React.lazy(() => import('@arandu/laravel-mui-admin/RepositoryIndex'))}
                     </Suspense>
                 ),
                 // user: (action) => {

@@ -4,9 +4,7 @@ import Divider from '@mui/material/Divider';
 
 import { Link, Outlet } from 'react-router-dom';
 
-import SideMenuLayout from '@arandu/laravel-mui-admin/lib/components/SideMenuLayout';
-
-import { route, t, auth } from '@arandu/laravel-mui-admin';
+import { route, t, auth, SideMenuLayout } from '@arandu/laravel-mui-admin';
 
 /**
  * Add items no menu aqui.

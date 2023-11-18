@@ -14,9 +14,9 @@ import { Link } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 
-import CsrfToken from '@arandu/laravel-mui-admin/lib/components/CsrfToken';
 import {
     config, route, error, useClearErrorsOnExit,
+    CsrfToken,
 } from '@arandu/laravel-mui-admin';
 
 import useWindowHeight from '../../../hooks/useWindowHeight';

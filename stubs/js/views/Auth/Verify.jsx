@@ -7,10 +7,10 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-import CsrfToken from '@arandu/laravel-mui-admin/lib/components/CsrfToken';
+
 import { useTranslation } from 'react-i18next';
 
-import { config, route } from '@arandu/laravel-mui-admin';
+import { config, route, CsrfToken } from '@arandu/laravel-mui-admin';
 
 const Verify = () => {
     const { t } = useTranslation();

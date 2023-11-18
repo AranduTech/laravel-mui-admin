@@ -9,8 +9,7 @@ import AppBar from '@mui/material/AppBar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-import Link from '@arandu/laravel-mui-admin/lib/components/Link';
-import { route } from '@arandu/laravel-mui-admin';
+import { route, Link } from '@arandu/laravel-mui-admin';
 
 /**
  * Componente raiz de navegação e layout para a área de visitantes.

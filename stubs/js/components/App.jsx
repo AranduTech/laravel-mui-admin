@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { ThemeProvider, CssBaseline, createTheme } from '@mui/material';
+import { ThemeProvider, CssBaseline } from '@mui/material';
 
-import { config, ToastProvider, DialogProvider } from '@arandu/laravel-mui-admin';
+import { ToastProvider, DialogProvider } from '@arandu/laravel-mui-admin';
 import { RouterProvider } from 'react-router-dom';
 
 

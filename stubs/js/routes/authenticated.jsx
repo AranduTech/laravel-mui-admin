@@ -1,7 +1,6 @@
 import React from 'react';
 
-import Suspense from '@arandu/laravel-mui-admin/lib/components/Suspense';
-import { route } from '@arandu/laravel-mui-admin';
+import { route, Suspense } from '@arandu/laravel-mui-admin';
 
 import Error from '../views/Error';
 
