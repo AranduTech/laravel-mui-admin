@@ -440,8 +440,7 @@ class RepositoryController extends Controller
             if (
                 in_array($key, $fillable)
                 || !method_exists($item, $method)
-                || !is_array($value)
-                || !is_null($value)
+                || (!is_array($value) && !is_null($value))
             ) 
             {
                 continue;
