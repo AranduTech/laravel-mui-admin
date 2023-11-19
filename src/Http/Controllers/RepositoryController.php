@@ -149,6 +149,13 @@ class RepositoryController extends Controller
 
         $this->afterModelSaved($request, $item);
 
+        // retrieve fresh item from database
+
+        $item = $this->beginQuery($request)
+            ->whereCurrentUserCan('read')
+            ->where('id', $item->id)
+            ->first();
+
         return response()->json($item, 200);
 
         // return redirect('/users');
@@ -218,9 +225,12 @@ class RepositoryController extends Controller
 
         $this->afterModelSaved($request, $item);
 
-        $relations = $item->getRelations();
-        
-        $item = $item->fresh(array_keys($relations));
+        // retrieve fresh item from database
+
+        $item = $this->beginQuery($request)
+            ->whereCurrentUserCan('read')
+            ->where('id', $id)
+            ->first();
 
         return response()->json($item, 200);
     }
