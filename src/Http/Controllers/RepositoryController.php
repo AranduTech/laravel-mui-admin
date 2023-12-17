@@ -117,7 +117,12 @@ class RepositoryController extends Controller
         if ($request->has('reducedColumns')) {
             $this->entity($request)::$withoutAppends = true;
         }
+
         $query = $this->entity($request)::beginCmsQuery($request);
+
+        if ($request->has('reducedColumns')) {
+            $query = $query->withOnly([]);
+        }
 
         return $query;
     }
