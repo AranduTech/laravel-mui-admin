@@ -2,7 +2,7 @@
 
 namespace Arandu\LaravelMuiAdmin\Contracts;
 
-class Attribute
+class Attribute implements \JsonSerializable
 {
 
     public function __construct(
@@ -14,6 +14,14 @@ class Attribute
     public static function create($key, $name)
     {
         return new static($key, $name);
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'key' => $this->key,
+            'name' => $this->name,
+        ];
     }
 
     

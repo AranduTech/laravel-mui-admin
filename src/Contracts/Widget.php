@@ -3,53 +3,166 @@
 
 namespace Arandu\LaravelMuiAdmin\Contracts;
 
+use Arandu\LaravelMuiAdmin\Contracts\Dimension;
+use Arandu\LaravelMuiAdmin\Contracts\Metric;
+use Illuminate\Database\Eloquent\Builder;
 use JsonSerializable;
 
 class Widget implements JsonSerializable
 {
-    private $grid = ['xs' => 12, 'lg' => 4];
+
+    /**
+     * The unique identifier of the widget.
+     * 
+     * @var string
+     */
+    private $id;
+
+    /**
+     * The layout of the widget.
+     *
+     * @var array
+     */
+    private $layout;
+
+    /**
+     * @var Dimension[]
+     */
     private $xAxis = [];
-    private $yAxis = [];
-    private $series = [];
-    private $dateset = [];
+
+    /**
+     * @var Dimension[]
+     */
+    private $groups = [];
+
+    /**
+     * @var Metric[]
+     */
+    private $values = [];
+    
 
     public function __construct(
         public $title,
-        public $type = 'line',
     ) {
         
+        $this->id = \Illuminate\Support\Str::slug($title);
     }
 
-    public function jsonSerialize(): mixed { 
-        return [
-            'title' => $this->title,
-            'type' => $this->type,
-            'grid' => $this->grid,
-            'xAxis' => $this->xAxis,
-            'yAxis' => $this->yAxis,
-            'series' => $this->series,
-            'dateset' => $this->dateset,
-        ];
-    }
-
+    /**
+     * Create a new widget instance.
+     * 
+     * @param mixed $title 
+     * 
+     * @return static 
+     */
     public static function create($title)
     {
         return new static($title);
     }
 
-    public function withGrid($grid)
+    /**
+     * Attach one or more dimensions to the widget.
+     * 
+     * @param Dimension[]|Dimension $dimension 
+     *  
+     * @return $this 
+     */
+    public function attach($dimension, &$array)
     {
-        $this->grid = $grid;
+        if (is_array($dimension) || $dimension instanceof \Illuminate\Support\Collection) {
+            if ($dimension instanceof \Illuminate\Support\Collection) {
+                $dimension = $dimension->all();
+            }
+            $array = array_merge($array, $dimension);
+        }
+        $array[] = $dimension;
 
         return $this;
     }
 
+    /**
+     * Set the unique identifier of the widget.
+     * 
+     * @param string $id - The unique identifier of the widget.
+     * @return $this 
+     */
+    public function identifiedBy($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Set the layout of the widget.
+     * 
+     * @param array $layout - The layout of the widget.
+     * @return $this 
+     */
+    public function withLayout($layout)
+    {
+        $this->layout = $layout;
+
+        return $this;
+    }
+
+    /**
+     * Set the dimension or dimensions for the x-axis of the widget.
+     * 
+     * @param string $title - The title of the widget.
+     * @return $this 
+     */
     public function withXAxis($xAxis)
     {
-        $this->xAxis = $xAxis;
-
-        return $this;
+        return $this->attach($xAxis, $this->xAxis);
     }
 
+    /**
+     * Set the dimension or dimensions for the groups of the widget.
+     * 
+     * @param string $title - The title of the widget.
+     * @return $this 
+     */
+    public function withGroups($groups)
+    {
+        return $this->attach($groups, $this->groups);
+    }
+
+    /**
+     * Set the metric or metrics for the values of the widget.
+     * 
+     * @param string $title - The title of the widget.
+     * @return $this 
+     */
+    public function withValues($values)
+    {
+        return $this->attach($values, $this->values);
+    }
+
+    public function execute(Builder $query)
+    {
+        $dimensions = collect(array_merge($this->xAxis, $this->groups, $this->values));
+
+        return $dimensions->reduce(function ($query, Dimension $dimension) {
+                return $dimension->apply($query);
+            }, $query)
+            ->get(
+                $dimensions->map(function (Dimension $dimension) {
+                    return $dimension->select();
+                })->all()
+            );
+
+    }
+
+    public function jsonSerialize(): mixed { 
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'layout' => $this->layout,
+            'groups' => $this->groups,
+            'xAxis' => $this->xAxis,
+            'values' => $this->values,
+        ];
+    }
     
 }

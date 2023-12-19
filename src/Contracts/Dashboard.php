@@ -5,7 +5,7 @@ namespace Arandu\LaravelMuiAdmin\Contracts;
 
 use Illuminate\Support\Collection;
 
-abstract class Dashboard
+abstract class Dashboard implements \JsonSerializable
 {
 
     /**
@@ -30,41 +30,39 @@ abstract class Dashboard
     protected $model;
 
     /**
-     * The widgets for this dashboard.
-     *
-     * @var Collection<Widget>
+     * Register widgets for this dashboard.
+     * 
+     * @return Widget[]
      */
-    protected $widgets;
+    abstract function widgets(): array;
 
-    public function __construct()
+
+    public function execute($widgetId, $filters = [])
     {
-        $this->widgets = new Collection();
+        $widgets = collect($this->widgets());
+
+        /** @var Widget */
+        $widget = $widgets->firstWhere('id', $widgetId);
+
+        if (!$widget) {
+            abort(404);
+        }
+
+        $query = $this->model::query()
+            ->whereMatchesFilters($filters);
+
+        return $widget->execute($query);
+
     }
 
 
-    // /**
-    //  * Add widgets to this dashboard.
-    //  * 
-    //  * @param Widget|array<Widget>|Collection $widgets 
-    //  * @return $this 
-    //  */
-    // public function withWidgets($widgets)
-    // {
-    //     if (is_array($widgets) || $widgets instanceof Collection) {
-    //         $this->widgets = $this->widgets->merge($widgets);
-    //     } else {
-    //         $this->widgets->push($widgets);
-    //     }
-
-    //     return $this;
-    // }
-
-
-    /**
-     * Register widgets for this dashboard.
-     * 
-     * @return array<Widget> 
-     */
-    abstract function widgets(): array;
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'widgets' => $this->widgets(),
+        ];
+    }
     
 }
