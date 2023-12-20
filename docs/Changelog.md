@@ -1,3 +1,20 @@
+# v0.5.x
+
+## **arandu/laravel-mui-admin** (PHP) v0.5.0
+
+ - Iniciado o desenvolvimento da ferramenta para BI
+ - **BREAKING CHANGE**: Removido o binding do `AdminService` ao alias `admin`. Utilize a facade `Admin` para acessar o serviço, ou injete o serviço diretamente no construtor de suas classes.
+
+```php
+app('admin')->someFunction(); // antes
+
+// ---
+
+use Arandu\LaravelMuiAdmin\Facades\Admin;
+
+Admin::someFunction(); // agora
+```
+
 # v0.4.x
 
 ## **@arandu/laravel-mui-admin** (JS) v0.4.0 // **arandu/laravel-mui-admin** (PHP) v0.4.0-beta-001
