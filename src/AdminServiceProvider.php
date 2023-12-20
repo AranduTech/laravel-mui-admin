@@ -54,11 +54,6 @@ class AdminServiceProvider extends ServiceProvider
 
     public function register()
     {
-        //
-        $this->app->singleton('admin', function ($app) {
-            return new AdminService();
-        });
-
         if ($this->app->runningInConsole()) {
             $this->commands([
                 CredentialsCommand::class,
