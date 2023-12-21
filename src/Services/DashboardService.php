@@ -36,9 +36,19 @@ class DashboardService
 
     }
 
+    public function all(): \Illuminate\Support\Collection
+    {
+        return $this->dashboards;
+    }
+
     public function find($uri): ?Dashboard
     {
         return $this->dashboards->firstWhere('uri', $uri);
+    }
+
+    public function first(): ?Dashboard
+    {
+        return $this->dashboards->first();
     }
 
 

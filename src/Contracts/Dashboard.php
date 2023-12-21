@@ -3,8 +3,6 @@
 
 namespace Arandu\LaravelMuiAdmin\Contracts;
 
-use Illuminate\Support\Collection;
-
 abstract class Dashboard implements \JsonSerializable
 {
 
@@ -13,7 +11,7 @@ abstract class Dashboard implements \JsonSerializable
      * 
      * @var string
      */
-    protected $uri;
+    public $uri;
 
     /**
      * The title of this dashboard.
