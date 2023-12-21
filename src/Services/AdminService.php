@@ -3,6 +3,7 @@
 namespace Arandu\LaravelMuiAdmin\Services;
 
 use App\Providers\RouteServiceProvider;
+use Arandu\LaravelMuiAdmin\Facades\Dashboard;
 use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
@@ -114,29 +115,37 @@ class AdminService
      */
     public function api($options = [])
     {
-        if (!isset($options['init']) || $options['init'] === true) {
-            Route::get('/admin/init', [InitController::class, 'init']);
-        }
-
-        $middleware = ['auth', 'verified'];
-        if (isset($options['middleware'])) {
-            $middleware = $options['middleware'];
-        }
 
         Route::group([
-            'middleware' => $middleware,
+            'namespace' => 'Arandu\LaravelMuiAdmin\Http\Controllers',
         ], function () {
-            // Registra as rotas de CRUD para os modelos que implementam HasAdminSupport
-            $models = $this->getModelsWithCrudSupport();
 
-            foreach ($models as $model) {
-                $instance = new $model();
-                $instance->api();
-            }
-
-            Route::get('/admin/helpers/autocomplete', [RepositoryController::class, 'autocomplete'])
-                ->name('admin.autocomplete');
+            Route::group([
+                'middleware' => config('admin.api.middleware', ['auth', 'verified']),
+                'prefix' => config('admin.api.prefix', 'admin'),
+            ], function () {
+                Route::get('init', 'InitController@init');
+    
+                // Registra as rotas de CRUD para os modelos que implementam HasAdminSupport
+                $models = $this->getModelsWithCrudSupport();
+    
+                foreach ($models as $model) {
+                    $instance = new $model();
+                    $instance->api();
+                }
+    
+                Route::get('helpers/autocomplete', 'RepositoryController@autocomplete')
+                    ->name('admin.autocomplete');
+            });
+    
+            Route::group([
+                'middleware' => config('admin.bi.api.middleware', ['auth', 'role:' . config('admin.roles.admin', 'admin')]),
+                'prefix' => config('admin.bi.api.prefix', 'admin/bi'),
+            ], function () {
+                Dashboard::registerApi();
+            });
         });
+
     }
     public function getModelSchema()
     {

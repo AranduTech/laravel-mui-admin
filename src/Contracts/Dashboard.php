@@ -13,7 +13,7 @@ abstract class Dashboard implements \JsonSerializable
      * 
      * @var string
      */
-    protected $id;
+    protected $uri;
 
     /**
      * The title of this dashboard.
@@ -49,17 +49,17 @@ abstract class Dashboard implements \JsonSerializable
         }
 
         $query = $this->model::query()
-            ->whereMatchesFilters($filters);
+            ->whereMatchesFilter($filters);
 
         return $widget->execute($query);
 
     }
 
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
-            'id' => $this->id,
+            'uri' => $this->uri,
             'title' => $this->title,
             'widgets' => $this->widgets(),
         ];

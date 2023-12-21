@@ -15,7 +15,7 @@ class BelongsToDimension extends Dimension
         public $key = null,
     ) {
         if (!$key) {
-            $this->key = $this->relation . '_id';
+            $key = $this->relation . '_id';
         }
 
         parent::__construct($key, $name);

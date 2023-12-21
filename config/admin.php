@@ -153,4 +153,69 @@ return [
         */
         'user_model' => env('ADMIN_CMS_USER_MODEL', 'App\Models\User'),
     ],
+
+    'api' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | API Prefix
+        |--------------------------------------------------------------------------
+        |
+        | This value is the prefix that will be used in the API routes. You
+        | should change this if other routes are conflicting with `Laravel MUI
+        | Admin` routes.
+        |
+        */
+        'prefix' => env('ADMIN_API_PREFIX', 'admin'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | API Middleware
+        |--------------------------------------------------------------------------
+        |
+        | This value is the list of the middleware that will be used in the API
+        | routes.
+        |
+        */
+        'middleware' => [
+            'auth',
+            'verified',
+        ],
+
+
+    ],
+
+    'bi' => [
+
+        'dashboards_namespace' => 'Dashboards',
+
+        'api' => [
+
+            /*
+            |--------------------------------------------------------------------------
+            | BI API Prefix
+            |--------------------------------------------------------------------------
+            |
+            | This value is the prefix that will be used in the BI API routes. You
+            | should change this if other routes are conflicting with `Laravel MUI
+            | Admin` routes.
+            |
+            */
+            'prefix' => env('ADMIN_BI_API_PREFIX', 'admin/bi'),
+
+            /*
+            |--------------------------------------------------------------------------
+            | BI API Middleware
+            |--------------------------------------------------------------------------
+            |
+            | This value is the list of the middleware that will be used in the BI
+            | API routes.
+            */
+            'middleware' => [
+                'auth',
+                'role:' . env('ADMIN_ROLE', 'admin'),
+            ],
+        ]
+
+    ],
 ];

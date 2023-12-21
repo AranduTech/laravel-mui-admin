@@ -16,7 +16,7 @@ class Attribute implements \JsonSerializable
         return new static($key, $name);
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return [
             'key' => $this->key,

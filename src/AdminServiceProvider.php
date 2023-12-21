@@ -6,7 +6,7 @@ use Arandu\LaravelMuiAdmin\Commands\RoleAndPermissions;
 use Arandu\LaravelMuiAdmin\Commands\CredentialsCommand;
 use Arandu\LaravelMuiAdmin\Commands\MakeReactComponent;
 use Arandu\LaravelMuiAdmin\Commands\ManifestCommand;
-use Arandu\LaravelMuiAdmin\Services\AdminService;
+use Arandu\LaravelMuiAdmin\Facades\Admin;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,14 +14,51 @@ use Laravel\Ui\UiCommand;
 
 class AdminServiceProvider extends ServiceProvider
 {
-    public function boot(AdminService $adminService)
+    public function boot()
     {
-        // $this->loadRoutesFrom(__DIR__.'/routes/web.php');
-        // $this->loadViewsFrom(__DIR__.'/resources/views', 'admin');
-        // $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        if ($this->app->runningInConsole()) {
+            $this->registerPublish();
+        }
+        $this->registerMacros();
+        $this->registerRelationMorphMap();
+
+    }
+
+    public function register()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                CredentialsCommand::class,
+                RoleAndPermissions::class,
+                MakeReactComponent::class,
+                ManifestCommand::class,
+            ]);
+        }
+    }
+
+    protected function registerPublish()
+    {
         $this->publishes([
             __DIR__.'/../config/admin.php' => config_path('admin.php'),
         ]);
+    }
+
+    protected function registerRelationMorphMap()
+    {
+        $models = Admin::getModelsWithCrudSupport();
+
+        $enforceMorphMap = [];
+
+        foreach ($models as $model) {
+            $instance = new $model();
+            $enforceMorphMap[$instance->getSchemaName()] = \Illuminate\Support\Str::replaceFirst('\\', '', $model);
+        }
+
+        Relation::enforceMorphMap($enforceMorphMap);
+    }
+
+    protected function registerMacros()
+    {
 
         UiCommand::macro('mui', function ($command) {
             Presets\Mui::install();
@@ -40,27 +77,5 @@ class AdminServiceProvider extends ServiceProvider
             $this->dropColumn('updated_by');
         });
 
-        $models = $adminService->getModelsWithCrudSupport();
-
-        $enforceMorphMap = [];
-
-        foreach ($models as $model) {
-            $instance = new $model();
-            $enforceMorphMap[$instance->getSchemaName()] = \Illuminate\Support\Str::replaceFirst('\\', '', $model);
-        }
-
-        Relation::enforceMorphMap($enforceMorphMap);
-    }
-
-    public function register()
-    {
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                CredentialsCommand::class,
-                RoleAndPermissions::class,
-                MakeReactComponent::class,
-                ManifestCommand::class,
-            ]);
-        }
     }
 }

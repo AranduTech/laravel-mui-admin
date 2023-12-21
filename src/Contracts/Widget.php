@@ -16,7 +16,7 @@ class Widget implements JsonSerializable
      * 
      * @var string
      */
-    private $id;
+    public $uri;
 
     /**
      * The layout of the widget.
@@ -39,13 +39,23 @@ class Widget implements JsonSerializable
      * @var Metric[]
      */
     private $values = [];
+
+    /**
+     * @var callable[]
+     */
+    private $scopes = [];
+
+    /**
+     * @var callable
+     */
+    private $customData;
     
 
     public function __construct(
         public $title,
     ) {
         
-        $this->id = \Illuminate\Support\Str::slug($title);
+        $this->uri = \Illuminate\Support\Str::slug($title);
     }
 
     /**
@@ -81,14 +91,14 @@ class Widget implements JsonSerializable
     }
 
     /**
-     * Set the unique identifier of the widget.
+     * Set the custom uri key for this widget.
      * 
-     * @param string $id - The unique identifier of the widget.
+     * @param string $uri - The custom uri key for this widget.
      * @return $this 
      */
-    public function identifiedBy($id)
+    public function withUri($uri)
     {
-        $this->id = $id;
+        $this->uri = $uri;
 
         return $this;
     }
@@ -139,8 +149,35 @@ class Widget implements JsonSerializable
         return $this->attach($values, $this->values);
     }
 
+    /**
+     * Set the scope or scopes of the widget.
+     * 
+     * @param string $title - The title of the widget.
+     * @return $this 
+     */
+    public function withScopes($scopes)
+    {
+        return $this->attach($scopes, $this->scopes);
+    }
+
+    public function withCustomData(callable $callback)
+    {
+        $this->customData = $callback;
+
+        return $this;
+    }
+
+
     public function execute(Builder $query)
     {
+        if ($this->customData) {
+            return call_user_func($this->customData, $query);
+        }
+
+        foreach ($this->scopes as $scope) {
+            $query->where($scope);
+        }
+
         $dimensions = collect(array_merge($this->xAxis, $this->groups, $this->values));
 
         return $dimensions->reduce(function ($query, Dimension $dimension) {
@@ -156,7 +193,7 @@ class Widget implements JsonSerializable
 
     public function jsonSerialize(): mixed { 
         return [
-            'id' => $this->id,
+            'uri' => $this->uri,
             'title' => $this->title,
             'layout' => $this->layout,
             'groups' => $this->groups,
