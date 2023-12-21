@@ -21,6 +21,7 @@ class Attribute implements \JsonSerializable
         return [
             'key' => $this->key,
             'name' => $this->name,
+            'type' => class_basename($this),
         ];
     }
 

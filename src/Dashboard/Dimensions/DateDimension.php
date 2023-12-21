@@ -15,6 +15,10 @@ class DateDimension extends Dimension
         public $alias = null
     ) {
         parent::__construct($key, $name);
+
+        if (!$this->alias) {
+            $this->alias = "date_" . $this->key;
+        }
     }
 
     public function apply(Builder $query): Builder {
@@ -26,6 +30,16 @@ class DateDimension extends Dimension
             $this->alias
                 ? "DATE({$this->key}) as {$this->alias}"
                 : "DATE({$this->key})"
+        );
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return array_merge(
+            parent::jsonSerialize(),
+            [
+                'alias' => $this->alias,
+            ]
         );
     }
 

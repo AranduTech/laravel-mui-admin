@@ -24,4 +24,14 @@ class BelongsToDimension extends Dimension
     public function apply(Builder $query): Builder {
         return $query->with($this->relation)->groupBy($this->key);
     }
+
+    public function jsonSerialize(): mixed
+    {
+        return array_merge(
+            parent::jsonSerialize(),
+            [
+                'relation' => $this->relation,
+            ]
+        );
+    }
 }

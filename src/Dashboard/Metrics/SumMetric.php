@@ -14,6 +14,10 @@ class SumMetric extends Metric
         public $alias = null
     ) {
         parent::__construct($key, $name);
+
+        if (!$this->alias) {
+            $this->alias = "sum_" . $this->key;
+        }
     }
 
     public function select() {
@@ -21,6 +25,16 @@ class SumMetric extends Metric
             $this->alias
                 ? "SUM({$this->key}) as {$this->alias}"
                 : "SUM({$this->key})"
+        );
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return array_merge(
+            parent::jsonSerialize(),
+            [
+                'alias' => $this->alias,
+            ]
         );
     }
 }
