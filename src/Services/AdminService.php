@@ -117,7 +117,7 @@ class AdminService
     {
 
         Route::group([
-            'namespace' => 'Arandu\LaravelMuiAdmin\Http\Controllers',
+            'namespace' => '\Arandu\LaravelMuiAdmin\Http\Controllers',
         ], function () {
 
             Route::group([
