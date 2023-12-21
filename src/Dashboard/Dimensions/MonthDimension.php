@@ -6,7 +6,7 @@ use Arandu\LaravelMuiAdmin\Contracts\Dimension;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-class DateDimension extends Dimension
+class MonthDimension extends Dimension
 {
 
     public function __construct(
@@ -17,7 +17,7 @@ class DateDimension extends Dimension
         parent::__construct($key, $name);
 
         if (!$alias) {
-            $this->alias = "date_" . $this->key;
+            $this->alias = "month_" . $this->key;
         }
     }
 
@@ -26,8 +26,9 @@ class DateDimension extends Dimension
     }
 
     public function select() {
-        return DB::raw("DATE({$this->key}) as {$this->alias}");
+        return DB::raw("DATE_FORMAT({$this->key}, '%Y-%m') as {$this->alias}");
     }
+
 
     public function jsonSerialize(): mixed
     {

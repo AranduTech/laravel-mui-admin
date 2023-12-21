@@ -1,14 +1,13 @@
 <?php
 
-namespace Arandu\LaravelMuiAdmin\Dashboard\Dimensions;
+namespace Arandu\LaravelMuiAdmin\Dashboard\Metrics;
 
-use Arandu\LaravelMuiAdmin\Contracts\Dimension;
-use Illuminate\Database\Eloquent\Builder;
+use Arandu\LaravelMuiAdmin\Contracts\Metric;
 use Illuminate\Support\Facades\DB;
 
-class DateDimension extends Dimension
+class AverageMetric extends Metric
 {
-
+    
     public function __construct(
         public $key,
         public $name,
@@ -16,17 +15,13 @@ class DateDimension extends Dimension
     ) {
         parent::__construct($key, $name);
 
-        if (!$alias) {
-            $this->alias = "date_" . $this->key;
+        if (!$this->alias) {
+            $this->alias = "avg_" . $this->key;
         }
     }
 
-    public function apply(Builder $query): Builder {
-        return $query->groupBy($this->alias);
-    }
-
     public function select() {
-        return DB::raw("DATE({$this->key}) as {$this->alias}");
+        return DB::raw("AVG({$this->key}) as {$this->alias}");
     }
 
     public function jsonSerialize(): mixed
@@ -38,5 +33,4 @@ class DateDimension extends Dimension
             ]
         );
     }
-
 }

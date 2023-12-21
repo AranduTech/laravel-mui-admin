@@ -3,9 +3,8 @@
 namespace Arandu\LaravelMuiAdmin\Dashboard\Metrics;
 
 use Arandu\LaravelMuiAdmin\Contracts\Metric;
-use Illuminate\Support\Facades\DB;
 
-class SumMetric extends Metric
+class CountMetric extends Metric
 {
     
     public function __construct(
@@ -16,12 +15,12 @@ class SumMetric extends Metric
         parent::__construct($key, $name);
 
         if (!$this->alias) {
-            $this->alias = "sum_" . $this->key;
+            $this->alias = "count_" . $this->key;
         }
     }
 
     public function select() {
-        return DB::raw("SUM({$this->key}) as {$this->alias}");
+        return "COUNT({$this->key}) as {$this->alias}";
     }
 
     public function jsonSerialize(): mixed
