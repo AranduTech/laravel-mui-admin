@@ -201,7 +201,7 @@ return [
             | Admin` routes.
             |
             */
-            'prefix' => env('ADMIN_BI_API_PREFIX', 'admin/bi'),
+            'prefix' => env('ADMIN_BI_API_PREFIX', 'bi'),
 
             /*
             |--------------------------------------------------------------------------

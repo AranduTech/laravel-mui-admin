@@ -118,14 +118,14 @@ class AdminService
 
         Route::group([
             'namespace' => '\Arandu\LaravelMuiAdmin\Http\Controllers',
+            'prefix' => config('admin.api.prefix', 'admin'),
         ], function () {
+
+            Route::get('init', 'InitController@init');
 
             Route::group([
                 'middleware' => config('admin.api.middleware', ['auth', 'verified']),
-                'prefix' => config('admin.api.prefix', 'admin'),
             ], function () {
-                Route::get('init', 'InitController@init');
-    
                 // Registra as rotas de CRUD para os modelos que implementam HasAdminSupport
                 $models = $this->getModelsWithCrudSupport();
     
@@ -140,7 +140,7 @@ class AdminService
     
             Route::group([
                 'middleware' => config('admin.bi.api.middleware', ['auth', 'role:' . config('admin.roles.admin', 'admin')]),
-                'prefix' => config('admin.bi.api.prefix', 'admin/bi'),
+                'prefix' => config('admin.bi.api.prefix', 'bi'),
             ], function () {
                 Dashboard::registerApi();
             });
