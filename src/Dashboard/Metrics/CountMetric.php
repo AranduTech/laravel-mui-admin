@@ -3,6 +3,7 @@
 namespace Arandu\LaravelMuiAdmin\Dashboard\Metrics;
 
 use Arandu\LaravelMuiAdmin\Contracts\Metric;
+use Illuminate\Support\Facades\DB;
 
 class CountMetric extends Metric
 {
@@ -20,7 +21,8 @@ class CountMetric extends Metric
     }
 
     public function select() {
-        return "COUNT({$this->key}) as {$this->alias}";
+        // return "COUNT({$this->key}) as {$this->alias}";
+        return DB::raw("COUNT({$this->key}) as {$this->alias}");
     }
 
     public function jsonSerialize(): mixed
