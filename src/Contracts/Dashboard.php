@@ -35,7 +35,7 @@ abstract class Dashboard implements \JsonSerializable
     abstract function widgets(): array;
 
 
-    public function execute($uri, $filters = [])
+    public function execute($request, $uri, $filters = [])
     {
         $widgets = collect($this->widgets());
 
@@ -47,10 +47,23 @@ abstract class Dashboard implements \JsonSerializable
         }
 
         $query = $this->model::query()
-            ->whereMatchesFilter($filters);
+            ->whereCurrentUserCan('read');
+
+        if ($request->has('tab')) {
+            $query = $query->whereBelongsToTab($request->tab);
+        }
+
+        if ($request->has('q') && !empty($request->q)) {
+            $query = $query->search($request->q);
+        }
+
+        if ($request->has('filters')) {
+            $query = $query->whereMatchesFilter(
+                json_decode($request->filters, true)
+            );
+        }
 
         return $widget->execute($query);
-
     }
 
 

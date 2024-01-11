@@ -643,13 +643,7 @@ class RepositoryController extends Controller
      */
     public function export(Request $request)
     {
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-
         $Model = $this->entity($request);
-
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        $worksheet->fromArray([$Model::getExportsHeadings()], null, 'A1');
 
         $query = $this->beginQuery($request)
             ->whereCurrentUserCan('read');
@@ -676,6 +670,10 @@ class RepositoryController extends Controller
             $data[] = $item->getExportsData();
         }
 
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->fromArray([$Model::getExportsHeadings()], null, 'A1');
         $worksheet->fromArray($data, null, 'A2');
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);

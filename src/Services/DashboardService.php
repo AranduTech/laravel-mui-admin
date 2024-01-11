@@ -56,6 +56,6 @@ class DashboardService
     {
         Route::get('dashboard/{dashboard}/widgets', 'DashboardController@dashboard')->name('admin.bi');
         Route::get('dashboard/{dashboard}/widget/{widget}/data', 'DashboardController@widget')->name('admin.bi.data');
-        Route::get('dashboard/{dashboard}/widget/{widget}/export', 'DashboardController@export')->name('admin.bi.export');
+        Route::get('dashboard/{dashboard}/export', 'DashboardController@export')->name('admin.bi.export');
     }
 }

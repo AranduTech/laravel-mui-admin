@@ -2,9 +2,12 @@
 
 namespace Arandu\LaravelMuiAdmin\Http\Controllers;
 
+use App\Bella\Services\Spreadsheet;
 use Arandu\LaravelMuiAdmin\Facades\Dashboard;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+
+use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
@@ -34,11 +37,61 @@ class DashboardController extends Controller
             $filters = json_decode($request->get('filters'), true);
         }
 
-        return response()->json($dashboard->execute($widget, $filters));
+        return response()->json($dashboard->execute($request, $widget, $filters));
     }
 
-    public function export(Request $request, $dashboard, $widget)
+    public function export(Request $request, $dashboard)
     {
+        $dashboard = Dashboard::find($dashboard);
+
+        if (!$dashboard) {
+            abort(404);
+        }
         
+        $filters = $request->filters;
+
+        $widgets = $dashboard->widgets();
+
+        // $tabs = [];
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+
+        foreach ($widgets as $widget) {
+            $item = $dashboard->execute($request, $widget->uri, $filters);
+            $data = $item->attributes->toArray();
+
+            $header = $item->attributes->pluck('label')->toArray();
+            // $tabs[] = $item->pluck('data')->toArray();
+            
+            $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet($spreadsheet, $widget->title);
+            $sheet->fromArray(
+                $header,
+                NULL,
+                'A1'
+            );
+
+            $count = 2;
+            foreach ($data as $sheetData) {
+                $sheet->fromArray(
+                    $sheetData,
+                    NULL,
+                    "A{$count}"
+                );
+                $count++;
+            }
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        $filename = Str::plural($dashboard);
+
+        // Prepare headers
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. $filename .'.xlsx"');
+
+        // Save to php://output
+        $writer->save('php://output');
+
+        return response()->json(['message' => 'OK'], 200);
     }
 }

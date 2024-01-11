@@ -21,6 +21,12 @@ export default {
         register: 'Criar Conta',
         remember: 'Lembrar-me',
     },
+    dashboard: {
+        export: {
+            title: 'Exportar Dados',
+            message: 'Deseja exportar todos os dados dessa dashboard?',
+        }
+    },
     cancel: 'Cancelar',
     common: {
         actions: 'Ações',
