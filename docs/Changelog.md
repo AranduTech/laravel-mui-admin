@@ -15,6 +15,9 @@ use Arandu\LaravelMuiAdmin\Facades\Admin;
 Admin::someFunction(); // agora
 ```
 
+ - Removido suporte para Laravel 8. O pacote agora requer Laravel 9.
+ - Adicionado suporte para PHP >= 8.0
+
 # v0.4.x
 
 ## **@arandu/laravel-mui-admin** (JS) v0.4.0 // **arandu/laravel-mui-admin** (PHP) v0.4.0-beta-001
