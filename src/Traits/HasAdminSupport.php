@@ -28,6 +28,7 @@ trait HasAdminSupport
             'exportable' => $this->hasExportable(),
             'web' => array_keys($this->getWebUrls()),
             'relations' => $this->getRelationships(),
+            'casts' => $this->getCasts(),
             'class' => static::class,
         ];
     }
