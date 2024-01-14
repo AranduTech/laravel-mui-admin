@@ -9,8 +9,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Styles -->
-    @vite(['resources/sass/app.scss'])
 </head>
 <body>
     <div id="root"></div>
@@ -30,8 +28,6 @@
     </div>
     
      <!-- Scripts -->
-    <script src="{{ mix('js/manifest.js') }}"></script>
-    <script src="{{ mix('js/vendor.js') }}"></script>
     @yield('script')
 </body>
 </html>

@@ -7,6 +7,8 @@ import App from './components/App';
 import config from './config';
 import routes from './routes/guest';
 
+import '../sass/app.scss';
+
 window.addEventListener('load', async () => {
     const { router, theme } = await app.withRoutes(routes)
         .withConfig(config)

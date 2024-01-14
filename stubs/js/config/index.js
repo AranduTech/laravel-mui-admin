@@ -1,4 +1,4 @@
-// import boot from './boot.js'; // Uncomment this line to use manifest in "bundle" mode
+// import boot from './boot.json'; // Uncomment this line to use manifest in "bundle" mode
 import icons from './icons';
 import lang from './lang';
 import theme from './theme';

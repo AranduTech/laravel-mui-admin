@@ -6,10 +6,14 @@
 // import App from './components/App';
 // import config from './config';
 // import routes from './routes/authenticated';
+// import plugins from './plugins';
+
+// import '../sass/app.scss';
 
 // window.addEventListener('load', async () => {
 //     const { router, theme } = await app.withRoutes(routes)
 //         .withConfig(config)
+//         .withPlugins(plugins)
 //         .init();
 
 //     ReactDOM.render(

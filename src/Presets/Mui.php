@@ -32,7 +32,11 @@ class Mui extends Preset
     protected static function updatePackageArray(array $packages, $configurationKey)
     {
         if ($configurationKey == 'devDependencies') {
-            return Arr::except($packages, ['axios']);
+            return [
+                '@vitejs/plugin-react' => '^4.1.1',
+                'laravel-vite-plugin' => '^0.7.2',
+                'sass' => '^1.69.1',
+            ] + Arr::except($packages, ['axios']);
         }
         return [
             '@arandu/laravel-mui-admin' => '^0.4.0',
@@ -43,6 +47,7 @@ class Mui extends Preset
             '@mui/icons-material' => '^5.11.0',
             '@mui/material' => '^5.13.4',
             // '@reduxjs/toolkit' => '^1.9.1',
+            'dayjs' => '^1.11.10',
             'deep-object-diff' => '^1.1.9',
             'i18next' => '^22.4.14',
             'i18next-browser-languagedetector' => '^7.0.1',
