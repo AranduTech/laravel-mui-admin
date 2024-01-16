@@ -54,43 +54,47 @@ class DashboardController extends Controller
 
         // $tabs = [];
 
+        $temp = [];
+
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
         foreach ($widgets as $widget) {
             $item = $dashboard->execute($request, $widget->uri, $filters)->first();
+            //dd($item);
 
-            dd($item);
+            $temp[] = $item;
 
-            if (empty($item->attributes)) {
-                break;
-            }
+            // if (empty($item->attributes)) {
+            //     break;
+            // }
 
-            $data = $item->attributes->toArray();
+            // $data = $item->attributes->toArray();
 
-            $header = array_merge(
-                $filters,
-                //$item->fillable->toArray(),
-                $item->attributes->toArray()
-            );
-            // $tabs[] = $item->pluck('data')->toArray();
+            // $header = array_merge(
+            //     $filters,
+            //     //$item->fillable->toArray(),
+            //     $item->attributes->toArray()
+            // );
+            // // $tabs[] = $item->pluck('data')->toArray();
             
-            $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet($spreadsheet, $widget->title);
-            $sheet->fromArray(
-                $header,
-                NULL,
-                'A1'
-            );
+            // $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet($spreadsheet, $widget->title);
+            // $sheet->fromArray(
+            //     $header,
+            //     NULL,
+            //     'A1'
+            // );
 
-            $count = 2;
-            foreach ($data as $sheetData) {
-                $sheet->fromArray(
-                    $sheetData,
-                    NULL,
-                    "A{$count}"
-                );
-                $count++;
-            }
+            // $count = 2;
+            // foreach ($data as $sheetData) {
+            //     $sheet->fromArray(
+            //         $sheetData,
+            //         NULL,
+            //         "A{$count}"
+            //     );
+            //     $count++;
+            // }
         }
+        dd($temp);
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
