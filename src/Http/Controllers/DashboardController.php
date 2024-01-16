@@ -6,7 +6,6 @@ use App\Bella\Services\Spreadsheet;
 use Arandu\LaravelMuiAdmin\Facades\Dashboard;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-
 use Illuminate\Support\Str;
 
 class DashboardController extends Controller
@@ -97,7 +96,7 @@ class DashboardController extends Controller
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
-        $filename = Str::plural($dashboard);
+        $filename = Str::plural($dashboard->title);
 
         // Prepare headers
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
