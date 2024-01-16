@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet as PhpSpreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class DashboardController extends Controller
 {
     public function dashboard($dashboard)
@@ -55,7 +60,10 @@ class DashboardController extends Controller
 
         $temp = [];
 
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet = new PhpSpreadsheet();
+        
+        // remove default sheet created
+        $spreadsheet->removeSheetByIndex(0);
 
         foreach ($widgets as $widget) {
             $item = $dashboard->execute($request, $widget->uri, $filters)->first();
@@ -75,7 +83,7 @@ class DashboardController extends Controller
             );
             // $tabs[] = $item->pluck('data')->toArray();
             
-            $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet($spreadsheet, $widget->title);
+            $sheet = new Worksheet($spreadsheet, $widget->title);
             $sheet->fromArray(
                 $header,
                 NULL,
@@ -91,6 +99,8 @@ class DashboardController extends Controller
                 );
                 $count++;
             }
+
+            $spreadsheet->addSheet($sheet);
         }
         // dd($temp);
 
