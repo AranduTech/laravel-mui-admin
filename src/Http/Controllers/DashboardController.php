@@ -58,24 +58,33 @@ class DashboardController extends Controller
 
         $spreadsheet = new PhpSpreadsheet();
 
-        foreach ($widgets as $widget) {
+        foreach ($widgets as $i => $widget) {
             $item = $dashboard->execute($request, $widget->uri, $filters)->first();
 
-            $data = $item->attributes;
+            $attributes = $item->attributes;
+            $values = [];
 
-            if (empty($data)) {
+            foreach (array_keys($attributes) as $key) {
+                $values[] = $attributes[$key];
+            }
+
+            if (empty($attributes)) {
                 break;
             }
+
+            $widgetJson = $widget->jsonSerialize();
+            
+            $sheet = $i === 0
+                ? $spreadsheet->getActiveSheet()
+                : new Worksheet($spreadsheet);
+            $sheet->setTitle($widgetJson['title']);
 
             $header = array_merge(
                 [],
                 // $filters,
-                array_keys($data),
+                array_keys($attributes),
             );
 
-            $widgetJson = $widget->jsonSerialize();
-            
-            $sheet = new Worksheet($spreadsheet, $widgetJson['title']);
             $sheet->fromArray(
                 $header,
                 NULL,
@@ -83,9 +92,9 @@ class DashboardController extends Controller
             );
 
             $count = 2;
-            foreach ($data as $sheetData) {
+            foreach ($values as $value) {
                 $sheet->fromArray(
-                    $sheetData,
+                    $value,
                     NULL,
                     "A{$count}"
                 );
@@ -93,10 +102,8 @@ class DashboardController extends Controller
             }
 
             $spreadsheet->addSheet($sheet);
+            $spreadsheet->setActiveSheetIndex($i + 1);
         }
-        
-        // // remove default sheet created
-        // $spreadsheet->removeSheetByIndex(0);
 
         $dashboardJson = $dashboard->jsonSerialize();
 
