@@ -42,7 +42,11 @@ class DashboardController extends Controller
 
     public function export(Request $request, $dashboard)
     {
-        $dashboard = Dashboard::find($dashboard);
+        $dashboard = Dashboard::with([
+            'widgets' => function ($query) {
+                $query->where('layout', '!=', 'kpi');
+            },
+        ])->find($dashboard);
 
         if (!$dashboard) {
             abort(404);
@@ -50,7 +54,7 @@ class DashboardController extends Controller
         
         $filters = $request->filters;
 
-        $widgets = $dashboard->widgets->where('layout', '!=', 'kpi')->get();
+        $widgets = $dashboard->widgets();
 
         // $tabs = [];
 
