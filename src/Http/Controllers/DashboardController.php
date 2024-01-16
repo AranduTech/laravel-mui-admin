@@ -50,7 +50,7 @@ class DashboardController extends Controller
         
         $filters = $request->filters;
 
-        $widgets = $dashboard->widgets();
+        $widgets = $dashboard->widgets()->where('layout', '!=', 'kpi')->get();
 
         // $tabs = [];
 
