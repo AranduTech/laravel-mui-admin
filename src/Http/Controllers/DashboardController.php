@@ -57,13 +57,14 @@ class DashboardController extends Controller
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
         foreach ($widgets as $widget) {
-            $item = $dashboard->execute($request, $widget->uri, $filters);
-
-            dd($item);
+            $item = $dashboard->execute($request, $widget->uri, $filters)->first();
 
             $data = $item->attributes->toArray();
 
-            $header = $item->attributes->pluck('label')->toArray();
+            $header = array_merge(
+                $item->fillable->toArray(),
+                $item->attributes->toArray()
+            );
             // $tabs[] = $item->pluck('data')->toArray();
             
             $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet($spreadsheet, $widget->title);
