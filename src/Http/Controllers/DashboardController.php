@@ -61,9 +61,6 @@ class DashboardController extends Controller
         $temp = [];
 
         $spreadsheet = new PhpSpreadsheet();
-        
-        // remove default sheet created
-        $spreadsheet->removeSheetByIndex(0);
 
         foreach ($widgets as $widget) {
             $item = $dashboard->execute($request, $widget->uri, $filters)->first();
@@ -103,6 +100,9 @@ class DashboardController extends Controller
             $spreadsheet->addSheet($sheet);
         }
         // dd($temp);
+        
+        // // remove default sheet created
+        // $spreadsheet->removeSheetByIndex(0);
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
