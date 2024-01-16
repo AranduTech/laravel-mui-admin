@@ -50,7 +50,7 @@ class DashboardController extends Controller
         
         $filters = $request->filters;
 
-        dd($filters);
+        dd($request);
 
         $widgets = $dashboard->widgets();
 
