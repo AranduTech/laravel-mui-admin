@@ -59,6 +59,14 @@ class DashboardController extends Controller
         foreach ($widgets as $widget) {
             $item = $dashboard->execute($request, $widget->uri, $filters)->first();
 
+            dd([
+                'attributes' => $item->attributes,
+            ]);
+
+            if (empty($item->attributes)) {
+                break;
+            }
+
             $data = $item->attributes->toArray();
 
             $header = array_merge(
