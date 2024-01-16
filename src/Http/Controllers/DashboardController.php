@@ -58,6 +58,9 @@ class DashboardController extends Controller
 
         foreach ($widgets as $widget) {
             $item = $dashboard->execute($request, $widget->uri, $filters);
+
+            dd($item);
+
             $data = $item->attributes->toArray();
 
             $header = $item->attributes->pluck('label')->toArray();
