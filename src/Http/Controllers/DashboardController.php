@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet as PhpSpreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class DashboardController extends Controller
 {
@@ -107,10 +108,16 @@ class DashboardController extends Controller
 
         $filename = Str::plural($dashboardJson['title']);
 
-        if ($this->responseSpreadsheet($spreadsheet, $filename)) {
-            return response()->json(['message' => 'OK'], 200);
-        }
+        // Prepare headers
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. $filename .'.xlsx"');
+        header('Cache-Control: max-age=0');
 
-        return response()->json(['message' => 'Error'], 500);
+        $writer = new Xlsx($spreadsheet);
+
+        // Save to php://output
+        $writer->save('php://output');
+
+        return response()->json(['message' => 'OK'], 200);
     }
 }
