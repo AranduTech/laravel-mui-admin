@@ -50,6 +50,8 @@ class DashboardController extends Controller
         
         $filters = $request->filters;
 
+        dd($filters);
+
         $widgets = $dashboard->widgets();
 
         // $tabs = [];
@@ -70,7 +72,8 @@ class DashboardController extends Controller
             $data = $item->attributes->toArray();
 
             $header = array_merge(
-                $item->fillable->toArray(),
+                $filters,
+                //$item->fillable->toArray(),
                 $item->attributes->toArray()
             );
             // $tabs[] = $item->pluck('data')->toArray();
