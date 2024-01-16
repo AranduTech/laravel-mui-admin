@@ -96,7 +96,9 @@ class DashboardController extends Controller
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
-        $filename = Str::plural($dashboard->title);
+        $dashboardJson = $dashboard->jsonSerialize();
+
+        $filename = Str::plural($dashboardJson['title']);
 
         // Prepare headers
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
