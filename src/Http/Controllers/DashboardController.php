@@ -95,8 +95,8 @@ class DashboardController extends Controller
             $spreadsheet->addSheet($sheet);
         }
         
-        // remove default sheet created
-        $spreadsheet->removeSheetByIndex(0);
+        // // remove default sheet created
+        // $spreadsheet->removeSheetByIndex(0);
 
         $dashboardJson = $dashboard->jsonSerialize();
 
