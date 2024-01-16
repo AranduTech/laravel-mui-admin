@@ -52,20 +52,14 @@ class DashboardController extends Controller
             abort(404);
         }
         
-        $filters = $request->filters;
+        $filters = $request->filters ?? [];
 
         $widgets = $dashboard->widgets();
-
-        // $tabs = [];
-
-        $temp = [];
 
         $spreadsheet = new PhpSpreadsheet();
 
         foreach ($widgets as $widget) {
             $item = $dashboard->execute($request, $widget->uri, $filters)->first();
-            //dd($item);
-            $temp[] = $item;
 
             $data = $item->attributes;
 
@@ -74,13 +68,14 @@ class DashboardController extends Controller
             }
 
             $header = array_merge(
+                [],
                 // $filters,
-                //$item->fillable->toArray(),
-                array_keys($data)
+                array_keys($data),
             );
-            // $tabs[] = $item->pluck('data')->toArray();
+
+            $widgetJson = $widget->jsonSerialize();
             
-            $sheet = new Worksheet($spreadsheet, $widget->title);
+            $sheet = new Worksheet($spreadsheet, $widgetJson['title']);
             $sheet->fromArray(
                 $header,
                 NULL,
@@ -99,7 +94,6 @@ class DashboardController extends Controller
 
             $spreadsheet->addSheet($sheet);
         }
-        // dd($temp);
         
         // remove default sheet created
         $spreadsheet->removeSheetByIndex(0);
