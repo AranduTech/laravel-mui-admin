@@ -62,14 +62,14 @@ class DashboardController extends Controller
             $item = $dashboard->execute($request, $widget->uri, $filters)->first();
 
             $attributes = $item->attributes;
-            $values = [];
-
-            foreach (array_keys($attributes) as $key) {
-                $values[] = $attributes[$key];
-            }
 
             if (empty($attributes)) {
                 break;
+            }
+
+            $values = [];
+            foreach (array_keys($attributes) as $key) {
+                $values[] = $attributes[$key];
             }
 
             $widgetJson = $widget->jsonSerialize();
