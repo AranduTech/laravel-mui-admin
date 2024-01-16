@@ -2,8 +2,8 @@
 
 namespace Arandu\LaravelMuiAdmin\Http\Controllers;
 
-use App\Bella\Services\Spreadsheet;
 use Arandu\LaravelMuiAdmin\Facades\Dashboard;
+
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
@@ -11,7 +11,6 @@ use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet as PhpSpreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class DashboardController extends Controller
 {
@@ -101,22 +100,17 @@ class DashboardController extends Controller
         }
         // dd($temp);
         
-        // // remove default sheet created
-        // $spreadsheet->removeSheetByIndex(0);
-
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        // remove default sheet created
+        $spreadsheet->removeSheetByIndex(0);
 
         $dashboardJson = $dashboard->jsonSerialize();
 
         $filename = Str::plural($dashboardJson['title']);
 
-        // Prepare headers
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="'. $filename .'.xlsx"');
+        if ($this->responseSpreadsheet($spreadsheet, $filename)) {
+            return response()->json(['message' => 'OK'], 200);
+        }
 
-        // Save to php://output
-        $writer->save('php://output');
-
-        return response()->json(['message' => 'OK'], 200);
+        return response()->json(['message' => 'Error'], 500);
     }
 }
