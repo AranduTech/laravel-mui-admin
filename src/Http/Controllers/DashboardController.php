@@ -42,11 +42,7 @@ class DashboardController extends Controller
 
     public function export(Request $request, $dashboard)
     {
-        $dashboard = Dashboard::with([
-            'widgets' => function ($query) {
-                $query->where('layout', '!=', 'kpi');
-            },
-        ])->find($dashboard);
+        $dashboard = Dashboard::find($dashboard);
 
         if (!$dashboard) {
             abort(404);
@@ -65,40 +61,39 @@ class DashboardController extends Controller
         foreach ($widgets as $widget) {
             $item = $dashboard->execute($request, $widget->uri, $filters)->first();
             //dd($item);
-
             $temp[] = $item;
 
-            // if (empty($item->attributes)) {
-            //     break;
-            // }
+            $data = $item->attributes;
 
-            // $data = $item->attributes->toArray();
+            if (empty($data)) {
+                break;
+            }
 
-            // $header = array_merge(
-            //     $filters,
-            //     //$item->fillable->toArray(),
-            //     $item->attributes->toArray()
-            // );
-            // // $tabs[] = $item->pluck('data')->toArray();
+            $header = array_merge(
+                // $filters,
+                //$item->fillable->toArray(),
+                array_keys($data)
+            );
+            // $tabs[] = $item->pluck('data')->toArray();
             
-            // $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet($spreadsheet, $widget->title);
-            // $sheet->fromArray(
-            //     $header,
-            //     NULL,
-            //     'A1'
-            // );
+            $sheet = new \PhpOffice\PhpSpreadsheet\Worksheet($spreadsheet, $widget->title);
+            $sheet->fromArray(
+                $header,
+                NULL,
+                'A1'
+            );
 
-            // $count = 2;
-            // foreach ($data as $sheetData) {
-            //     $sheet->fromArray(
-            //         $sheetData,
-            //         NULL,
-            //         "A{$count}"
-            //     );
-            //     $count++;
-            // }
+            $count = 2;
+            foreach ($data as $sheetData) {
+                $sheet->fromArray(
+                    $sheetData,
+                    NULL,
+                    "A{$count}"
+                );
+                $count++;
+            }
         }
-        dd($temp);
+        // dd($temp);
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
