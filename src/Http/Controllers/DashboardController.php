@@ -3,6 +3,7 @@
 namespace Arandu\LaravelMuiAdmin\Http\Controllers;
 
 use Arandu\LaravelMuiAdmin\Facades\Dashboard;
+use Arandu\LaravelMuiAdmin\Facades\Spreadsheet;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -24,7 +25,6 @@ class DashboardController extends Controller
         }
 
         return response()->json($dashboard);
-
     }
 
     public function widget(Request $request, $dashboard, $widget)
@@ -46,6 +46,8 @@ class DashboardController extends Controller
 
     public function export(Request $request, $dashboard)
     {
+        // dd($request->all());
+
         $dashboard = Dashboard::find($dashboard);
 
         if (!$dashboard) {
@@ -61,49 +63,73 @@ class DashboardController extends Controller
         foreach ($widgets as $i => $widget) {
             $item = $dashboard->execute($request, $widget->uri, $filters)->first();
 
-            $attributes = $item->attributes;
+            $itemCollection = collect($item);
 
-            if (empty($attributes)) {
-                break;
-            }
+            $attributes = $itemCollection->toArray();
 
-            $values = [];
-            foreach (array_keys($attributes) as $key) {
-                $values[] = $attributes[$key];
-            }
+            if (!empty($attributes)) {
+                $attributeKeys = array_keys($attributes);
 
-            $widgetJson = $widget->jsonSerialize();
-            
-            $sheet = $i === 0
-                ? $spreadsheet->getActiveSheet()
-                : new Worksheet($spreadsheet);
-            $sheet->setTitle($widgetJson['title']);
-
-            $header = array_merge(
-                [],
-                // $filters,
-                array_keys($attributes),
-            );
-
-            $sheet->fromArray(
-                $header,
-                NULL,
-                'A1'
-            );
-
-            $count = 2;
-            foreach ($values as $value) {
-                $sheet->fromArray(
-                    $value,
-                    NULL,
-                    "A{$count}"
+                $header = array_merge(
+                    $filters,
+                    $attributeKeys,
                 );
-                $count++;
-            }
 
-            $spreadsheet->addSheet($sheet);
-            $spreadsheet->setActiveSheetIndex($i + 1);
+                $values = [];
+
+                if (isset($filters['users']) && !empty($filters['users'])) {
+                    foreach ($filters['users'] as $user) {
+                        $_val = [];
+                        $_val['user'] = $user['value'];
+
+                        foreach ($attributes as $key => $attribute) {
+                            if (empty($attribute)) {
+                                $attribute = 'N/A';
+                            }
+
+                            if (is_array($attribute) || is_object($attribute)) {
+                                $_val[$key] = json_encode($attribute);
+                            } else {
+                                $_val[$key] = $attribute;
+                            }
+                        }
+
+                        $values[] = $_val;
+                    }
+                } else {
+                    $_val= [];
+                    
+                    foreach ($attributes as $key => $attribute) {
+                        if (empty($attribute)) {
+                            $attribute = 'N/A';
+                        }
+
+                        if (is_array($attribute) || is_object($attribute)) {
+                            $_val[$key] = json_encode($attribute);
+                        } else {
+                            $_val[$key] = $attribute;
+                        }
+                    }
+
+                    $values[] = $_val;
+                }
+                // dd($values);
+
+                $widgetJson = $widget->jsonSerialize();
+
+                $sheetName = $widgetJson['title'];
+
+                $spreadsheet = Spreadsheet::createSheetFromArray(
+                    $sheetName,
+                    $values,
+                    $header,
+                    $spreadsheet,
+                    $i
+                );
+            }
         }
+
+        $spreadsheet->setActiveSheetIndex(0);
 
         $dashboardJson = $dashboard->jsonSerialize();
 

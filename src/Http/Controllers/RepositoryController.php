@@ -2,6 +2,7 @@
 
 namespace Arandu\LaravelMuiAdmin\Http\Controllers;
 
+use Arandu\LaravelMuiAdmin\Facades\Spreadsheet;
 use Arandu\LaravelMuiAdmin\Services\AdminService;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
@@ -669,20 +670,39 @@ class RepositoryController extends Controller
         foreach ($items as $item) {
             $data[] = $item->getExportsData();
         }
+        // dd($data);
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
+        $header = [$Model::getExportsHeadings()];
+
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->fromArray([$Model::getExportsHeadings()], null, 'A1');
+        $worksheet->fromArray($header, null, 'A1');
         $worksheet->fromArray($data, null, 'A2');
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-
         $filename = Str::plural((new $Model)->getSchemaName());
+
+        $headerConfig = [];
+        foreach ($header as $i => $h) {
+            $headerConfig[$i] = [
+                'width' => 50,
+            ];
+        }
+
+        Spreadsheet::formatHeadersAndData(
+            $worksheet,
+            $headerConfig,
+            [
+                'height' => 50,
+            ]
+        );
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
         // Prepare headers
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="'. $filename .'.xlsx"');
+        header('Cache-Control: max-age=0');
 
         // Save to php://output
         $writer->save('php://output');

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Bella\Services;
+namespace Arandu\LaravelMuiAdmin\Services;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet as PhpSpreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class Spreadsheet
+class SpreadsheetService
 {
     static function createWorkbookFromArray($data)
     {
@@ -29,13 +29,22 @@ class Spreadsheet
         return $spreadsheet;
     }
 
-    static function createSheetFromArray($sheetName, $data, $columns)
-    {
-        $spreadsheet = new PhpSpreadsheet();
+    public function createSheetFromArray(
+        $sheetName, 
+        array $data, 
+        array $header, 
+        $spreadsheet = new PhpSpreadsheet(), 
+        $loop = 0
+    ) {
+        // var_dump($data);
 
-        $sheet = new Worksheet($spreadsheet, $sheetName);
+        $sheet = $loop === 0
+            ? $spreadsheet->getActiveSheet()
+            : new Worksheet($spreadsheet);
+        $sheet->setTitle($sheetName);
+
         $sheet->fromArray(
-            $columns,
+            $header,
             NULL,
             'A1'
         );
@@ -45,47 +54,30 @@ class Spreadsheet
             $sheet->fromArray(
                 $sheetData,
                 NULL,
-                'A' . $count
+                "A{$count}"
             );
             $count++;
         }
         // dd($sheet->toArray());
 
-        $spreadsheet->addSheet($sheet);
+        if ($loop > 0) {
+            $spreadsheet->addSheet($sheet);
+        }
 
-        static::formatHeadersAndData(
+        $headerConfig = [];
+        foreach ($header as $i => $h) {
+            $headerConfig[$i] = [
+                'width' => 50,
+            ];
+        }
+
+        self::formatHeadersAndData(
             $spreadsheet->getSheetByName($sheetName),
-            [
-                [ // Nº Atendimento
-                    'width' => 20
-                ],
-                [ // Nome do Paciente
-                    'width' => 35
-                ],
-                [ // Data do Atendimento
-                    'width' => 25,
-                    'numberFormat' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-                ],
-                [ // Paciente Entregou Registro Médico?
-                    'width' => 20
-                ],
-                [ // Duração do Atendimento (minutos)
-                    'width' => 20
-                ],
-                [ // Status do Atendimento
-                    'width' => 15
-                ],
-                [ // Observações
-                    'width' => 50
-                ],
-            ],
+            $headerConfig,
             [
                 'height' => 50,
             ]
         );
-        
-        // remove default sheet created
-        $spreadsheet->removeSheetByIndex(0);
 
         return $spreadsheet;
     }
@@ -145,32 +137,26 @@ class Spreadsheet
 
         $sheet->getRowDimension(1)->setRowHeight($args['height'], 'pt');
 
-        $i = 0;
-        foreach ($sheet->getColumnIterator() as $column) {
-            if (isset($formatSchema[$i])) {
+        $columns = $sheet->getColumnIterator();
+
+        foreach ($columns as $c => $column) {
+            if (isset($formatSchema[$c])) {
                 $columnChar = $column->getColumnIndex();
-                if (isset($formatSchema[$i]['width'])) {
-                    if ($formatSchema[$i]['width'] !== 'auto') {
+                if (isset($formatSchema[$c]['width'])) {
+                    if ($formatSchema[$c]['width'] !== 'auto') {
                         $sheet->getColumnDimension($columnChar)->setWidth(
-                            $formatSchema[$i]['width']
+                            $formatSchema[$c]['width']
                         );
                     }
                 }
-                // $style = [];
 
-                if (isset($formatSchema[$i]['numberFormat'])) {
+                if (isset($formatSchema[$c]['numberFormat'])) {
                     $sheet
                         ->getStyle($columnChar . '2:' . $columnChar . $limits['row'])
                         ->getNumberFormat()
-                        ->setFormatCode($formatSchema[$i]['numberFormat']);
+                        ->setFormatCode($formatSchema[$c]['numberFormat']);
                 }
             }
-
-            $i++;
         }
-
-        // foreach ($formatSchema as $format) {
-        //     $sheet->getColumnIterator()
-        // }
     }
 }
