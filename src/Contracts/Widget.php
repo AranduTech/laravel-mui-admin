@@ -54,8 +54,37 @@ class Widget implements JsonSerializable
     public function __construct(
         public $title,
     ) {
-        
         $this->uri = \Illuminate\Support\Str::slug($title);
+
+        $this->layout = [
+            'grid' => ['xs' => 12],
+            'type' => 'kpi',
+            'style' => [
+                'colors' => [
+                    '#2196f3',
+                    '#4caf50',
+                    '#ff9800',
+                    '#ffeb3b',
+                    '#9c27b0',
+                    '#e91e63',
+                    '#f44336',
+                ],
+                'thresholdColors' => [
+                    'min' => '#c7c7c7',
+                    'max' => '#f44336'
+                ]
+            ],
+            'options' => [
+                'legend' => [
+                    'direction' => 'row',
+                    'position' => [ 
+                        'vertical' => 'bottom', 
+                        'horizontal' => 'middle' 
+                    ],
+                    'padding' => 0,
+                ]
+            ]
+        ];
     }
 
     /**
@@ -111,7 +140,10 @@ class Widget implements JsonSerializable
      */
     public function withLayout($layout)
     {
-        $this->layout = $layout;
+        $this->layout = array_merge(
+            $this->layout,
+            $layout,
+        );
 
         return $this;
     }
