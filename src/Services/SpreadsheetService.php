@@ -9,7 +9,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class SpreadsheetService
 {
-    static function createWorkbookFromArray($data)
+    Public function createWorkbookFromArray($data)
     {
         $spreadsheet = new PhpSpreadsheet();
 
@@ -82,7 +82,7 @@ class SpreadsheetService
         return $spreadsheet;
     }
 
-    public static function formatHeadersAndData(
+    public function formatHeadersAndData(
         Worksheet $sheet, 
         $formatSchema = [], 
         $args = [
