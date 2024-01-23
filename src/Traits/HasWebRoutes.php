@@ -11,7 +11,7 @@ trait HasWebRoutes
 {
     public static function getDefaultWebUrls()
     {
-        $schemaName = static::getSchemaName();
+        $schemaName = self::getSchemaName();
 
         return [
             'index' => Str::plural($schemaName),

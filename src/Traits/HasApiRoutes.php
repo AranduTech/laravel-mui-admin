@@ -10,7 +10,7 @@ trait HasApiRoutes
 {
     public static function getDefaultApiUrls()
     {
-        $schemaName = static::getSchemaName();
+        $schemaName = self::getSchemaName();
         
         return [
             'list' => Str::plural($schemaName),
