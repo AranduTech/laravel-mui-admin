@@ -8,10 +8,9 @@ use Illuminate\Support\Str;
 
 trait HasApiRoutes
 {
-
-    public function getApiUrls()
+    public function getDefaultUrls()
     {
-        $apiUrls = [
+        return [
             'list' => Str::plural($this->getSchemaName()),
             'item' => $this->getSchemaName() . '/{id}',
             'create' => [
@@ -31,6 +30,16 @@ trait HasApiRoutes
                 'method' => 'post',
             ]
         ];
+    }
+
+    public function getApiUrls()
+    {
+        $apiUrls = array_merge(
+            $this->getDefaultUrls(),
+            [
+                //
+            ]
+        );
 
         if ($this->hasSoftDelete()) {
             $apiUrls['restore'] = [

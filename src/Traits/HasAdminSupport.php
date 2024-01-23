@@ -8,13 +8,12 @@ use Illuminate\Support\Str;
 
 trait HasAdminSupport
 {
-
-    use DeactivatesAppends;
-    use Formable;
-    use HasApiRoutes;
-    use HasCmsQueryScopes;
-    use HasWebRoutes;
     use SyncsBelongsToManyRelations;
+    use DeactivatesAppends;
+    use HasApiRoutes;
+    use HasWebRoutes;
+    use HasCmsQueryScopes;
+    use Formable;
     use Tableable;
 
     public function getSchema()

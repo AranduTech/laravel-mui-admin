@@ -9,6 +9,15 @@ use InvalidArgumentException;
 
 trait HasWebRoutes
 {
+    public function getDefaultUrls()
+    {
+        return [
+            'index' => Str::plural($this->getSchemaName()),
+            // 'new' => $this->getSchemaName() . '/create',
+            // 'edit' => $this->getSchemaName() . '/update',
+            // 'item' => $this->getSchemaName() . '/{id}',
+        ];
+    }
 
     /**
      * 
@@ -17,12 +26,12 @@ trait HasWebRoutes
      */
     public function getWebUrls()
     {
-        return [
-            'index' => Str::plural($this->getSchemaName()),
-            // 'new' => $this->getSchemaName() . '/create',
-            // 'edit' => $this->getSchemaName() . '/update',
-            // 'item' => $this->getSchemaName() . '/{id}',
-        ];
+        return array_merge(
+            $this->getDefaultUrls(),
+            [
+                //
+            ]
+        );
     }
 
     public function web()
