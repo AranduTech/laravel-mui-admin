@@ -8,9 +8,9 @@ use Illuminate\Support\Str;
 
 trait HasApiRoutes
 {
-    public static function getDefaultApiUrls()
+    public function getDefaultApiUrls()
     {
-        $schemaName = self::getSchemaName();
+        $schemaName = $this->getSchemaName();
         
         return [
             'list' => Str::plural($schemaName),
@@ -37,7 +37,7 @@ trait HasApiRoutes
     public function getApiUrls()
     {
         $apiUrls = array_merge(
-            static::getDefaultApiUrls(),
+            $this->getDefaultApiUrls(),
             [
                 //
             ]
