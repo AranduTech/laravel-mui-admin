@@ -9,10 +9,8 @@ use InvalidArgumentException;
 
 trait HasWebRoutes
 {
-    public function getDefaultWebUrls()
+    public static function getDefaultWebUrls($schemaName)
     {
-        $schemaName = $this->getSchemaName();
-
         return [
             'index' => Str::plural($schemaName),
             // 'new' => $schemaName . '/create',
@@ -29,7 +27,7 @@ trait HasWebRoutes
     public function getWebUrls()
     {
         return array_merge(
-            $this->getDefaultWebUrls(),
+            static::getDefaultWebUrls($this->getSchemaName()),
             [
                 //
             ]
