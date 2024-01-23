@@ -8,25 +8,27 @@ use Illuminate\Support\Str;
 
 trait HasApiRoutes
 {
-    public function getDefaultApiUrls()
+    public static function getDefaultApiUrls()
     {
+        $schemaName = static::getSchemaName();
+        
         return [
-            'list' => Str::plural($this->getSchemaName()),
-            'item' => $this->getSchemaName() . '/{id}',
+            'list' => Str::plural($schemaName),
+            'item' => $schemaName . '/{id}',
             'create' => [
-                'url' => Str::plural($this->getSchemaName()),
+                'url' => Str::plural($schemaName),
                 'method' => 'post',
             ],
             'update' => [
-                'url' => $this->getSchemaName() . '/{id}',
+                'url' => $schemaName . '/{id}',
                 'method' => 'post',
             ],
             'delete' => [
-                'url' => $this->getSchemaName() . '/{id}',
+                'url' => $schemaName . '/{id}',
                 'method' => 'delete',
             ],
             'massDelete' => [
-                'url' => Str::plural($this->getSchemaName()) . '/delete',
+                'url' => Str::plural($schemaName) . '/delete',
                 'method' => 'post',
             ]
         ];
@@ -35,7 +37,7 @@ trait HasApiRoutes
     public function getApiUrls()
     {
         $apiUrls = array_merge(
-            $this->getDefaultApiUrls(),
+            static::getDefaultApiUrls(),
             [
                 //
             ]
