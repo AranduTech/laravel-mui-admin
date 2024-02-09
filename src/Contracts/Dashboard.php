@@ -35,7 +35,7 @@ abstract class Dashboard implements \JsonSerializable
     abstract function widgets(): array;
 
 
-    public function execute($request, $uri, $filters = [])
+    public function execute($request, $uri)
     {
         $widgets = collect($this->widgets());
 

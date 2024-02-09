@@ -35,13 +35,7 @@ class DashboardController extends Controller
             abort(404);
         }
 
-        $filters = [];
-
-        if ($request->has('filters')) {
-            $filters = json_decode($request->get('filters'), true);
-        }
-
-        return response()->json($dashboard->execute($request, $widget, $filters));
+        return response()->json($dashboard->execute($request, $widget));
     }
 
     public function export(Request $request, $dashboard)
