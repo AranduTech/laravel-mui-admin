@@ -140,6 +140,13 @@ class Widget implements JsonSerializable
      */
     public function withLayout($layout)
     {
+        if (isset($layout['style'])) {
+            $layout['style'] = array_merge(
+                $this->layout['style'],
+                $layout['style'],
+            );
+        }
+
         $this->layout = array_merge(
             $this->layout,
             $layout,
