@@ -6,9 +6,9 @@ trait Exportable
 {
 
     public static function getExportsHeadings(
-        $removeColumns = [],
+        $translatedColumns = null,
         $extraColumns = [],
-        $translatedColumns = null
+        $removeColumns = [],
     ): array {
 
         /** @var \Illuminate\Database\Eloquent\Model */
