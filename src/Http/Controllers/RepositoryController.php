@@ -674,7 +674,15 @@ class RepositoryController extends Controller
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-        $header = [$Model::getExportsHeadings()];
+        $extraColumns = $Model::$defaultExtraColumns ?? [];
+        $removeColumns = $Model::$defaultRemoveColumns ?? [];
+        $translatedColumns = $Model::$defaultTranslatedColumns ?? [];
+
+        $header = [$Model::getExportsHeadings(
+            $translatedColumns,
+            $extraColumns,
+            $removeColumns
+        )];
 
         $worksheet = $spreadsheet->getActiveSheet();
         $worksheet->fromArray($header, null, 'A1');
