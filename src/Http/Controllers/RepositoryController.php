@@ -646,6 +646,8 @@ class RepositoryController extends Controller
     {
         $Model = $this->entity($request);
 
+        $instance = new $Model;
+
         $query = $this->beginQuery($request)
             ->whereCurrentUserCan('read');
 
@@ -674,21 +676,19 @@ class RepositoryController extends Controller
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-        $extraColumns = $Model::$defaultExtraColumns ?? [];
-        $removeColumns = $Model::$defaultRemoveColumns ?? [];
-        $translatedColumns = $Model::$defaultTranslatedColumns ?? [];
+        $transformColumns = $instance->transformExportColumns();
 
-        $header = [$Model::getExportsHeadings(
-            $translatedColumns,
-            $extraColumns,
-            $removeColumns
+        $header = [$instance->getExportsHeadings(
+            $transformColumns['exportTranslatedColumns'],
+            $transformColumns['exportExtraColumns'],
+            $transformColumns['exportRemoveColumns']
         )];
 
         $worksheet = $spreadsheet->getActiveSheet();
         $worksheet->fromArray($header, null, 'A1');
         $worksheet->fromArray($data, null, 'A2');
 
-        $filename = Str::plural((new $Model)->getSchemaName());
+        $filename = Str::plural($instance->getSchemaName());
 
         $headerConfig = [];
         foreach ($header as $i => $h) {
