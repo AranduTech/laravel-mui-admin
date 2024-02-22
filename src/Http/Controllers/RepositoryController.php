@@ -676,7 +676,11 @@ class RepositoryController extends Controller
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-        $transformColumns = $instance->transformExportColumns();
+        $transformColumns = $instance->transformExportColumns() ?? [
+            'exportTranslatedColumns' => null,
+            'exportExtraColumns' => [],
+            'exportRemoveColumns' => [],
+        ];
 
         $header = [$instance->getExportsHeadings(
             $transformColumns['exportTranslatedColumns'],
