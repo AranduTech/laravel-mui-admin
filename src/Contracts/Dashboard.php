@@ -47,6 +47,7 @@ abstract class Dashboard implements \JsonSerializable
         }
 
         $query = $this->model::query()
+            ->beginCmsQuery($request)
             ->whereCurrentUserCan('read');
 
         if ($request->has('tab')) {
